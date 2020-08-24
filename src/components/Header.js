@@ -113,7 +113,7 @@ export default function Header(props) {
 							</ListItem>
 						</Link>
 					}
-					{Utils.hasRight(props.user, 'users', 'read') &&
+					{Utils.hasRight(props.user, 'user', 'read') &&
 						<Link to="/users" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><GroupIcon /></ListItemIcon>
