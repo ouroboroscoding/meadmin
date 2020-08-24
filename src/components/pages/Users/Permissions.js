@@ -29,7 +29,7 @@ const ALL    = 15;
 const TYPES = [
 	{title: "CRM Users", rights: [
 		{name: "user", title: "Users", allowed: CREATE | READ | UPDATE},
-		{name: "permission", title: "Permissions", allowed: UPDATE}
+		{name: "permission", title: "Permissions", allowed: READ | UPDATE}
 	]},
 	{title: "Misc", rights: [
 		{name: "report_recipients", title: "Report Addresses", allowed: ALL}
