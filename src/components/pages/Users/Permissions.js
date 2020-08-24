@@ -28,8 +28,8 @@ const DELETE = 8;
 const ALL    = 15;
 const TYPES = [
 	{title: "CRM Users", rights: [
-		{name: "users", title: "Users", allowed: CREATE | READ | UPDATE},
-		{name: "permissions", title: "Permissions", allowed: UPDATE}
+		{name: "user", title: "Users", allowed: CREATE | READ | UPDATE},
+		{name: "permission", title: "Permissions", allowed: UPDATE}
 	]},
 	{title: "Misc", rights: [
 		{name: "report_recipients", title: "Report Addresses", allowed: ALL}
