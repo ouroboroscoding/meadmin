@@ -27,12 +27,38 @@ const UPDATE = 2;
 const DELETE = 8;
 const ALL    = 15;
 const TYPES = [
-	{title: "CRM Users", rights: [
+	{title: "Auth", rights: [
 		{name: "user", title: "Users", allowed: CREATE | READ | UPDATE},
-		{name: "permission", title: "Permissions", allowed: READ | UPDATE}
+		{name: "permission", title: "User Rights", allowed: READ | UPDATE}
 	]},
-	{title: "Misc", rights: [
-		{name: "report_recipients", title: "Report Addresses", allowed: ALL}
+	{title: "CRM", rights: [
+		{name: "customers", title: "Customers", allowed: CREATE | READ | UPDATE}
+	]},
+	{title: "Patient", rights: [
+		{name: "patient_account", title: "Patient", allowed: CREATE | READ | UPDATE},
+		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE}
+	]},
+	{title: "CSR", rights: [
+		{name: "csr_agents", title: "Agents", allowed: ALL},
+		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
+		{name: "csr_overwrite", title: "Overwrite Claims", allowed: CREATE},
+		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
+		{name: "csr_stats", title: "Stats", allowed: READ},
+		{name: "csr_templates", title: "Templates", allowed: ALL},
+		{name: "calendly", title: "Calendly", allowed: READ},
+	]},
+	{title: "Memo", rights: [
+		{name: "memo_mips", title: "MIP", allowed: READ | UPDATE},
+		{name: "memo_notes", title: "Notes", allowed: READ | CREATE}
+	]},
+	{title: "WellDyne", rights: [
+		{name: "welldyne_adhoc", title: "AdHoc", allowed: CREATE | READ | DELETE},
+		{name: "welldyne_outbound", title: "Outbound", allowed: READ | UPDATE}
+	]},
+	{title: "Admin", rights: [
+		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
+		{name: "manual_adhoc", title: "Manual AdHoc", allowed: ALL},
+		{name: "report_recipients", title: "Report Recipients", allowed: ALL}
 	]}
 ];
 
