@@ -28,7 +28,7 @@ const DELETE = 8;
 const ALL    = 15;
 const TYPES = [
 	{title: "Provider Tool", rights: [
-		{name: "order_claims", title: "Order Claims", allowed: CREATE | UPDATE | DELETE},
+		{name: "order_claims", title: "Order Claims", allowed: CREATE | DELETE},
 		{name: "order_overwrite", title: "Order Claim Overwrite", allowed: CREATE},
 		{name: "prov_templates", title: "Templates: Ability to create and modify templates", allowed: ALL}
 	]},
