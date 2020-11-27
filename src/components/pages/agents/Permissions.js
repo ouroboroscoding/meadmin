@@ -1,11 +1,11 @@
 /**
  * Permissions
  *
- * Handles permissions associated with a User
+ * Handles permissions associated with an Agent
  *
  * @author Chris Nasr <bast@maleexcel.com>
  * @copyright MaleExcelMedical
- * @created 2020-04-21
+ * @created 2020-07-08
  */
 
 // NPM modules
@@ -17,7 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 
-// Generic modules
+// Generic
 import Tools from '../../../generic/tools';
 
 // defines
@@ -27,38 +27,31 @@ const UPDATE = 2;
 const DELETE = 8;
 const ALL    = 15;
 const TYPES = [
-	{title: "Auth", rights: [
-		{name: "user", title: "Users", allowed: CREATE | READ | UPDATE},
-		{name: "permission", title: "User Rights", allowed: READ | UPDATE}
+	{title: "Customer Service", rights: [
+		{name: "csr_agents", title: "Agents: Ability to manage agents and permissions", allowed: ALL},
+		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
+		{name: "csr_overwrite", title: "Claim Overwrite", allowed: CREATE},
+		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
+		{name: "csr_templates", title: "Templates: Ability to create and modify templates", allowed: ALL},
+		{name: "csr_stats", title: "Stats: Allowed to view stats", allowed: READ}
 	]},
 	{title: "CRM", rights: [
-		{name: "customers", title: "Customers", allowed: CREATE | READ | UPDATE}
+		{name: "customers", title: "CRM Data", allowed: READ}
 	]},
-	{title: "Patient", rights: [
-		{name: "patient_account", title: "Patient", allowed: CREATE | READ | UPDATE},
-		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE}
-	]},
-	{title: "CSR", rights: [
-		{name: "csr_agents", title: "Agents", allowed: ALL},
-		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
-		{name: "csr_overwrite", title: "Overwrite Claims", allowed: CREATE},
-		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
-		{name: "csr_stats", title: "Stats", allowed: READ},
-		{name: "csr_templates", title: "Templates", allowed: ALL},
-		{name: "calendly", title: "Calendly", allowed: READ},
+	{title: "Patient Portal", rights: [
+		{name: "patient_account", title: "Account", allowed: CREATE | READ | UPDATE}
 	]},
 	{title: "Memo", rights: [
-		{name: "memo_mips", title: "MIP", allowed: READ | UPDATE},
-		{name: "memo_notes", title: "Notes", allowed: READ | CREATE}
+		{name: "calendly", title: "Calendly Appointment", allowed: READ},
+		{name: "memo_mips", title: "Memo MIP", allowed: READ | UPDATE},
+		{name: "memo_notes", title: "Memo Notes", allowed: READ | CREATE}
 	]},
-	{title: "WellDyne", rights: [
-		{name: "welldyne_adhoc", title: "AdHoc", allowed: CREATE | READ | DELETE},
-		{name: "welldyne_outbound", title: "Outbound", allowed: READ | UPDATE}
-	]},
-	{title: "Admin", rights: [
+	{title: "Pharmacy", rights: [
+		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE},
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
-		{name: "manual_adhoc", title: "Manual AdHoc", allowed: ALL},
-		{name: "report_recipients", title: "Report Recipients", allowed: ALL}
+		{name: "welldyne_adhoc", title: "Adhoc", allowed: CREATE | READ | DELETE},
+		{name: "welldyne_never_started", title: "Never Started", allowed: READ | UPDATE | DELETE},
+		{name: "welldyne_outbound", title: "Outbound Failed", allowed: READ | UPDATE}
 	]}
 ];
 
@@ -151,7 +144,7 @@ export default class Permissions extends React.Component {
 
 	render() {
 		return TYPES.map(section =>
-			<Paper id="permissions">
+			<Paper className="permissions">
 				<Grid container spacing={2}>
 					<Grid item xs={4} className="title"><span>{section.title}</span></Grid>
 					<Grid item xs={2} className="title"><span>Create</span></Grid>

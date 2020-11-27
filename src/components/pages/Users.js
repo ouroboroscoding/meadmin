@@ -34,7 +34,7 @@ import SearchComponent from '../format/Search';
 import FormComponent from '../format/Form';
 
 // Composites
-import Permissions from './Users/Permissions';
+import Permissions from './users/Permissions';
 
 // Generic modules
 import Events from '../../generic/events';

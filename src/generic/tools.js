@@ -281,24 +281,6 @@ export function safeLocalStorage(name, default_) {
 }
 
 /**
- * Safe Local Storage Bool
- *
- * Fetches a value from local storage or returns the default if no value is
- * found. Assumes data is a boolean value
- *
- * @name safeLocalStorageBool
- * @param String name			The name of the local var to fetch
- * @param String default_		The value to return if the var is not found
- * @return bool
- */
-export function safeLocalStorageBool(name, default_=false) {
-	let value = localStorage.getItem(name);
-	return value === null ? default_ : (
-		value === '' ? false : true
-	)
-}
-
-/**
  * Safe Local Storage JSON
  *
  * Fetches a value from local storage or returns the default if no value is
@@ -361,8 +343,9 @@ export function ucfirst(text) {
  */
 export function uuidv4() {
 	return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-		(c ^ crypto.getRandomValues((new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
-	)
+		// eslint-disable-next-line
+		(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+	);
 }
 
 // export module
@@ -378,7 +361,6 @@ export default {
 	isObject: isObject,
 	omap: omap,
 	safeLocalStorage: safeLocalStorage,
-	safeLocalStorageBool: safeLocalStorageBool,
 	safeLocalStorageJSON: safeLocalStorageJSON,
 	sortByKey: sortByKey,
 	ucfirst: ucfirst,

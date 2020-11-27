@@ -76,7 +76,7 @@ export default function SignIn(props) {
 		Rest.create('auth', 'signin', {
 			"email": emailRef.current.value,
 			"passwd": passwdRef.current.value
-		}).done(res => {
+		}, false).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.restError(res.error)) {

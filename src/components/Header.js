@@ -26,7 +26,10 @@ import Typography from '@material-ui/core/Typography';
 import EmailIcon from '@material-ui/icons/Email';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import GroupIcon from '@material-ui/icons/Group';
+import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
+import PeopleIcon from '@material-ui/icons/People';
+
 
 // Site components
 import Loader from './Loader';
@@ -105,6 +108,22 @@ export default function Header(props) {
 				onClose={menuToggle}
 			>
 				<List>
+					{Utils.hasRight(props.user, 'csr_agents', 'read') &&
+						<Link to="/agents" onClick={menuToggle}>
+							<ListItem button>
+								<ListItemIcon><PeopleIcon /></ListItemIcon>
+								<ListItemText primary="Agents (CSR)" />
+							</ListItem>
+						</Link>
+					}
+					{Utils.hasRight(props.user, 'providers', 'read') &&
+						<Link to="/providers" onClick={menuToggle}>
+							<ListItem button>
+								<ListItemIcon><LocalHospitalIcon /></ListItemIcon>
+								<ListItemText primary="Providers" />
+							</ListItem>
+						</Link>
+					}
 					{Utils.hasRight(props.user, 'report_recipients', 'read') &&
 						<Link to="/reports" onClick={menuToggle}>
 							<ListItem button>

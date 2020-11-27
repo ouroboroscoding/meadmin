@@ -29,6 +29,8 @@ import { LoaderHide, LoaderShow } from './Loader';
 import SignIn from './SignIn';
 
 // Page component modules
+import Agents from './pages/Agents';
+import Providers from './pages/Providers';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
 
@@ -97,13 +99,25 @@ export default function Site(props) {
 				/>
 				<div id="content">
 					<Switch>
-						<Route path="/reports">
+						<Route exact path="/agents">
+							<Agents
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/providers">
+							<Providers
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/reports">
 							<ReportRecipients
 								mobile={mobile}
 								user={user}
 							/>
 						</Route>
-						<Route path="/users">
+						<Route exact path="/users">
 							<Users
 								mobile={mobile}
 								user={user}
