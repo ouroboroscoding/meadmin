@@ -29,24 +29,24 @@ import HttpsIcon from '@material-ui/icons/Https';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 // Components
-import ResultsComponent from '../format/Results';
-import SearchComponent from '../format/Search';
-import FormComponent from '../format/Form';
+import ResultsComponent from '../../format/Results';
+import SearchComponent from '../../format/Search';
+import FormComponent from '../../format/Form';
 
 // Composites
-import Permissions from './users/Permissions';
+import Permissions from './Permissions';
 
 // Generic modules
-import Events from '../../generic/events';
-import Rest from '../../generic/rest';
-import Tools from '../../generic/tools';
+import Events from '../../../generic/events';
+import Rest from '../../../generic/rest';
+import Tools from '../../../generic/tools';
 
 // Local modules
-import Utils from '../../utils';
+import Utils from '../../../utils';
 
 // Definitions
-import UserDef from '../../definitions/auth/user';
-import Divisions from '../../definitions/divisions';
+import UserDef from '../../../definitions/auth/user';
+import Divisions from '../../../definitions/divisions';
 
 // Generate the user Tree
 const UserTree = new Tree(UserDef);
@@ -152,7 +152,7 @@ export default function Users(props) {
 	return (
 		<Box id="users">
 			<Box className="pageHeader">
-				<Typography variant="h3" className="title">Users</Typography>
+				<Typography className="title">Users</Typography>
 				<Tooltip title="Create new User">
 					<IconButton onClick={createToggle}>
 						<PersonAddIcon className="icon" />
