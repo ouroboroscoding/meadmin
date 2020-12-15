@@ -37,6 +37,7 @@ import Permissions from './Permissions';
 // Format Components
 import ResultsComponent from '../../format/Results';
 import FormComponent from '../../format/Form';
+import { SelectData } from '../../format/Shared';
 
 // Generic modules
 import Events from '../../../generic/events';
@@ -56,6 +57,11 @@ const _states = Tools.omap(Divisions['US'], (v,k) => [k,v]);
 // Set the options for the ed and hrt practice states
 ProviderDef['practiceStates']['__react__']['options'] = _states
 ProviderDef['hrtPracticeStates']['__react__']['options'] = _states
+ProviderDef['agent']['__react__'] = {
+	options: new SelectData('csr', 'agents', 'memo_id', 'name'),
+	title: 'Primary Agent',
+	type: 'select'
+};
 
 // Generate the provider Tree
 const ProviderTree = new Tree(ProviderDef);
