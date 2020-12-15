@@ -1,11 +1,11 @@
 /**
- * Providers
+ * Agents
  *
- * Page to add/edit providers to the tool
+ * Page to add/edit agents to the tool
  *
  * @author Chris Nasr <bast@maleexcel.com>
  * @copyright MaleExcelMedical
- * @created 2020-10-15
+ * @created 2020-07-07
  */
 
 // NPM modules
@@ -28,58 +28,47 @@ import Typography from '@material-ui/core/Typography';
 // Material UI Icons
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import HttpsIcon from '@material-ui/icons/Https';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // Composites
-import Permissions from './providers/Permissions';
+import Permissions from './Permissions';
 
 // Format Components
-import ResultsComponent from '../format/Results';
-import FormComponent from '../format/Form';
+import ResultsComponent from '../../format/Results';
+import FormComponent from '../../format/Form';
 
 // Generic modules
-import Events from '../../generic/events';
-import Rest from '../../generic/rest';
-import Tools from '../../generic/tools';
+import Events from '../../../generic/events';
+import Rest from '../../../generic/rest';
+import Tools from '../../../generic/tools';
 
 // Local modules
-import Utils from '../../utils';
+import Utils from '../../../utils';
 
-// Provider Definition
-import ProviderDef from '../../definitions/providers/provider_memo';
+// Agent Definition
+import AgentDef from '../../../definitions/csr/agent_memo';
 
-// Data
-import Divisions from '../../definitions/divisions';
-const _states = Tools.omap(Divisions['US'], (v,k) => [k,v]);
-
-// Set the options for the ed and hrt practice states
-ProviderDef['practiceStates']['__react__']['options'] = _states
-ProviderDef['hrtPracticeStates']['__react__']['options'] = _states
-
-// Generate the provider Tree
-const ProviderTree = new Tree(ProviderDef);
+// Generate the agent Tree
+const AgentTree = new Tree(AgentDef);
 
 /**
- * Providers
+ * Agents
  *
- * Lists all providers in the system with the ability to edit their permissions and
- * password as well as add new providers
+ * Lists all agents in the system with the ability to edit their permissions and
+ * password as well as add new agents
  *
- * @name Providers
+ * @name Agents
  * @extends React.Component
  */
-export default function Providers(props) {
+export default function Agents(props) {
 
 	// State
-	let [providers, providersSet] = useState(null);
+	let [agents, agentsSet] = useState(null);
 	let [create, createSet] = useState(false);
-	let [memo, memoSet] = useState(false);
 	let [password, passwordSet] = useState(false);
 	let [permissions, permissionsSet] = useState(false);
 
 	// Refs
-	let memoRef = useRef();
 	let passwdRef = useRef();
 	let permsRef = useRef();
 
@@ -88,27 +77,32 @@ export default function Providers(props) {
 
 		// If we have a user
 		if(props.user) {
-			fetchProviders();
+			fetchAgents();
 		} else {
-			providersSet(null);
+			agentsSet(null);
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]); // React to user changes
 
-	function createSuccess(provider) {
-		providersSet(providers => {
-			let ret = Tools.clone(providers);
-			ret.unshift(provider);
+	function createSuccess(agent) {
+		agentsSet(agents => {
+			let ret = Tools.clone(agents);
+			ret.unshift(agent);
 			return ret;
 		});
 		createSet(false);
 	}
 
-	// Fetch all the providers from the server
-	function fetchProviders() {
+	// Toggle the create form
+	function createToggle() {
+		createSet(b => !b);
+	}
 
-		// Fetch all providers
-		Rest.read('providers', 'providers', {}).done(res => {
+	// Fetch all the agents from the server
+	function fetchAgents() {
+
+		// Fetch all agents
+		Rest.read('csr', 'agents', {}).done(res => {
 
 			// If there's an error
 			if(res.error && !Utils.restError(res.error)) {
@@ -123,48 +117,17 @@ export default function Providers(props) {
 			// If there's data
 			if(res.data) {
 
-				// Set the providers
-				providersSet(res.data);
-			}
-		});
-	}
-
-	function memoImport() {
-
-		// Store the username
-		let sUserName = memoRef.current.value.trim();
-
-		// Import the memo user
-		Rest.create('providers', 'provider/memo', {
-			"userName": sUserName
-		}).done(res => {
-
-			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
-				Events.trigger('error', JSON.stringify(res.error));
-			}
-			if(res.warning) {
-				Events.trigger('warning', JSON.stringify(res.warning));
-			}
-
-			// If there's data
-			if('data' in res) {
-				if(res.data) {
-					Events.trigger('success', 'Provider ' + sUserName + ' added');
-					memoSet(false);
-					fetchProviders();
-				} else {
-					Events.trigger('error', 'No such Memo user: ' + sUserName);
-				}
+				// Set the agents
+				agentsSet(res.data);
 			}
 		});
 	}
 
 	function passwordUpdate() {
 
-		// Update the provider's password
-		Rest.update('providers', 'provider/passwd', {
-			"provider_id": password,
+		// Update the agent's password
+		Rest.update('csr', 'agent/passwd', {
+			"agent_id": password,
 			"passwd": passwdRef.current.value
 		}).done(res => {
 
@@ -184,11 +147,15 @@ export default function Providers(props) {
 		})
 	}
 
-	function permissionsShow(provider_id) {
+	function permissionsCancel() {
+		permissionsSet(false);
+	}
 
-		// Fetch the provider's permissions
-		Rest.read('providers', 'provider/permissions', {
-			"provider_id": provider_id
+	function permissionsShow(agent_id) {
+
+		// Fetch the agent's permissions
+		Rest.read('csr', 'agent/permissions', {
+			"agent_id": agent_id
 		}).done(res => {
 
 			// If there's an error or warning
@@ -204,7 +171,7 @@ export default function Providers(props) {
 
 				// Set the permissions
 				permissionsSet({
-					"_id": provider_id,
+					"_id": agent_id,
 					"rights": res.data
 				});
 			}
@@ -213,9 +180,9 @@ export default function Providers(props) {
 
 	function permissionsUpdate() {
 
-		// Update the provider's permissions
-		Rest.update('providers', 'provider/permissions', {
-			"provider_id": permissions._id,
+		// Update the agent's permissions
+		Rest.update('csr', 'agent/permissions', {
+			"agent_id": permissions._id,
 			"permissions": permsRef.current.value
 		}).done(res => {
 
@@ -239,14 +206,14 @@ export default function Providers(props) {
 		});
 	}
 
-	// Remove a provider
-	function removeProvider(_id) {
+	// Remove a agent
+	function removeAgent(_id) {
 
-		// Use the current providers to set the new providers
-		providersSet(providers => {
+		// Use the current agents to set the new agents
+		agentsSet(agents => {
 
-			// Clone the providers
-			let ret = Tools.clone(providers);
+			// Clone the agents
+			let ret = Tools.clone(agents);
 
 			// Find the index
 			let iIndex = Tools.afindi(ret, '_id', _id);
@@ -256,75 +223,68 @@ export default function Providers(props) {
 				ret.splice(iIndex, 1);
 			}
 
-			// Return the new providers
+			// Return the new agents
 			return ret;
 		});
 	}
 
 	// Return the rendered component
 	return (
-		<div id="providers">
-			<div className="providers">
+		<div id="agents">
+			<div className="agents">
 				<Box className="pageHeader">
-					<Typography variant="h4">Providers</Typography>
-					{Utils.hasRight(props.user, 'providers', 'create') &&
-						<React.Fragment>
-							<Tooltip title="Import Memo User">
-								<IconButton onClick={ev => memoSet(b => !b)}>
-									<PersonAddIcon />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Create New Provider">
-								<IconButton onClick={ev => createSet(b => !b)}>
-									<AddCircleIcon />
-								</IconButton>
-							</Tooltip>
-						</React.Fragment>
+					<Typography className="title">Agents</Typography>
+					{Utils.hasRight(props.user, 'csr_agents', 'create') &&
+						<Tooltip title="Create new agent">
+							<IconButton onClick={createToggle}>
+								<AddCircleIcon />
+							</IconButton>
+						</Tooltip>
 					}
 				</Box>
 				{create &&
 					<Paper className="padded">
 						<FormComponent
-							cancel={ev => createSet(b => !b)}
+							cancel={createToggle}
 							errors={{
 								1501: "Username already in use",
 								1502: "Password not strong enough"
 							}}
-							noun="provider"
-							service="providers"
+							noun="agent"
+							service="csr"
 							success={createSuccess}
 							title="Create New"
-							tree={ProviderTree}
+							tree={AgentTree}
 							type="create"
 						/>
 					</Paper>
 				}
 
-				{providers === null ?
+				{agents === null ?
 					<div>Loading...</div>
 				:
 					<ResultsComponent
 						actions={[
-							{"tooltip": "Edit Provider's permissions", "icon": HttpsIcon, "callback": permissionsShow},
-							{"tooltip": "Change Provider's password", "icon": VpnKeyIcon, "callback": provider_id => passwordSet(provider_id)}
+							{"tooltip": "Edit Agent's permissions", "icon": HttpsIcon, "callback": permissionsShow},
+							{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent_id => passwordSet(agent_id)}
 						]}
-						data={providers}
+						data={agents}
 						errors={{
 							1501: "Username already in use",
 						}}
-						noun="provider"
+						noun="agent"
 						orderBy="userName"
-						remove={Utils.hasRight(props.user, 'providers', 'delete') ? removeProvider : false}
-						service="providers"
-						tree={ProviderTree}
-						update={Utils.hasRight(props.user, 'providers', 'update')}
+						remove={Utils.hasRight(props.user, 'csr_agents', 'delete') ? removeAgent : false}
+						service="csr"
+						tree={AgentTree}
+						update={Utils.hasRight(props.user, 'csr_agents', 'update')}
 					/>
 				}
 				{permissions &&
 					<Dialog
 						aria-labelledby="confirmation-dialog-title"
 						maxWidth="lg"
-						onClose={ev => permissionsSet(false)}
+						onClose={permissionsCancel}
 						open={true}
 					>
 						<DialogTitle id="permissions-dialog-title">Update Permissions</DialogTitle>
@@ -335,7 +295,7 @@ export default function Providers(props) {
 							/>
 						</DialogContent>
 						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={ev => permissionsSet(false)}>
+							<Button variant="contained" color="secondary" onClick={permissionsCancel}>
 								Cancel
 							</Button>
 							<Button variant="contained" color="primary" onClick={permissionsUpdate}>
@@ -364,30 +324,6 @@ export default function Providers(props) {
 							</Button>
 							<Button variant="contained" color="primary" onClick={passwordUpdate}>
 								Update
-							</Button>
-						</DialogActions>
-					</Dialog>
-				}
-				{memo &&
-					<Dialog
-						aria-labelledby="memo-dialog-title"
-						maxWidth="lg"
-						onClose={ev => memoSet(false)}
-						open={true}
-					>
-						<DialogTitle id="memo-dialog-title">Import Memo User</DialogTitle>
-						<DialogContent dividers>
-							<TextField
-								label="User Name"
-								inputRef={memoRef}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={ev => memoSet(false)}>
-								Cancel
-							</Button>
-							<Button variant="contained" color="primary" onClick={memoImport}>
-								Import User
 							</Button>
 						</DialogActions>
 					</Dialog>
