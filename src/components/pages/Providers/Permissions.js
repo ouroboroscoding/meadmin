@@ -34,7 +34,7 @@ const TYPES = [
 	]},
 	{title: "CRM", rights: [
 		{name: "customers", title: "CRM Customers", allowed: READ},
-		{name: "orders", title: "CRM Orders", allowed: UPDATE}
+		{name: "orders", title: "CRM Orders", allowed: READ | UPDATE}
 	]},
 	{title: "Memo", rights: [
 		{name: "calendly", title: "Calendly Appointment", allowed: READ},
