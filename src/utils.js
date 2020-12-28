@@ -8,9 +8,6 @@
  * @created 2020-04-04
  */
 
-// Generic modules
-import Events from './generic/events';
-
 // Regex
 const rePhone = /^1?(\d{3})(\d{3})(\d{4})$/
 
@@ -25,7 +22,7 @@ const oRights = {
 /**
  * Utils
  */
-export default {
+const Utils = {
 
 	date: function(ts, separator='/') {
 		if(typeof ts === 'number') {
@@ -53,50 +50,6 @@ export default {
 		return this.date(ts) + ' ' + t.join(':')
 	},
 
-	errorTree: function(errors) {
-
-		// Init the return
-		var oRet = {}
-
-		// Go through each error
-		for(let i = 0; i < errors.length; ++i) {
-
-			// If the error field has a period
-			if(errors[i][0].includes('.')) {
-
-				// Split it
-				let lField = errors[i][0].split(/\.(.*)/)
-
-				// If we don't have the field already
-				if(!oRet[lField[0]]) {
-					oRet[lField[0]] = []
-				}
-
-				// Add the rest
-				oRet[lField[0]].push([lField[1], errors[i][1]]);
-			}
-
-			// Else it's a flat field
-			else {
-				oRet[errors[i][0]] = errors[i][1];
-			}
-		}
-
-		// Go through all the errors we found
-		for(let k in oRet) {
-
-			// If we find an array
-			if(Array.isArray(oRet[k])) {
-
-				// Recurse
-				oRet[k] = this.errorTree(oRet[k]);
-			}
-		}
-
-		// Return the Tree
-		return oRet;
-	},
-
 	hasRight: function(user, name, type) {
 
 		// If we have no user
@@ -119,52 +72,6 @@ export default {
 			return val;
 		}
 		return '(' + lMatch[1] + ') ' + lMatch[2] + '-' + lMatch[3];
-	},
-
-	restError: function(err) {
-
-		// What error is it?
-		switch(err.code) {
-
-			// No Session
-			case 102:
-
-				// Trigger signout
-				Events.trigger("signout");
-
-				// Nothing else to do
-				return true;
-
-			case 207:
-
-				// Notify the user
-				Events.trigger('error', 'Request to ' + err.msg + ' failed. Please contact support');
-
-				// Nothing else to do
-				return true;
-
-			// Insufficient rights
-			case 1000:
-
-				// Notify the user
-				Events.trigger('error', 'You lack the necessary rights to do the requested action');
-
-				// Nothing else to do
-				return true;
-
-			// Invalid fields
-			case 1001:
-
-				// Rebuild the error message
-				err.msg = this.errorTree(err.msg);
-
-				// But allow the child to deal with the messages themselves
-				return false;
-
-			// no default
-		}
-
-		// Failed to process error
-		return false;
 	}
 }
+export default Utils;

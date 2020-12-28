@@ -30,15 +30,23 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 
-// Generic modules
-import Events from '../../generic/events';
-import Rest from '../../generic/rest';
-import Tools from '../../generic/tools';
+// Shared communication modules
+import Rest from 'shared/communication/rest';
 
-// Local modules
-import Utils from '../../utils';
+// Shared generic modules
+import Events from 'shared/generic/events';
+import { afindi, clone, compare, empty } from 'shared/generic/tools';
 
-
+/**
+ * Report
+ *
+ * A single report and its list of recipients
+ *
+ * @name Report
+ * @access private
+ * @param Object props Attributes sent to the component
+ * @returns React.Component
+ */
 function Report(props) {
 
 	// State
@@ -58,7 +66,7 @@ function Report(props) {
 	function addressAdd() {
 
 		// Clone the existing addresses, add the new one, and set the state
-		let lAddresses = Tools.clone(addresses);
+		let lAddresses = clone(addresses);
 		lAddresses.push(addressRef.current.value);
 		addressesSet(lAddresses);
 
@@ -71,7 +79,7 @@ function Report(props) {
 
 		// Clone the existing addresses, delete the one specified, and set the
 		//	state
-		let lAddresses = Tools.clone(addresses);
+		let lAddresses = clone(addresses);
 		lAddresses.splice(i, 1);
 		addressesSet(lAddresses);
 	}
@@ -83,7 +91,7 @@ function Report(props) {
 		props.onSave(
 			props._id,
 			nameRef.current.value,
-			Tools.clone(addresses)
+			clone(addresses)
 		);
 	}
 
@@ -146,6 +154,16 @@ function Report(props) {
 	);
 }
 
+/**
+ * Report Recipients
+ *
+ * Displays the list of report types and recipients
+ *
+ * @name ReportRecipients
+ * @access private
+ * @param Object props Attributes sent to the component
+ * @returns React.Component
+ */
 export default function ReportRecipients(props) {
 
 	// State
@@ -180,7 +198,7 @@ export default function ReportRecipients(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -191,7 +209,7 @@ export default function ReportRecipients(props) {
 			if(res.data) {
 
 				// Clone the reports, add the new one, and set the state
-				let lReports = Tools.clone(reports);
+				let lReports = clone(reports);
 				lReports.unshift({
 					_id: res.data,
 					name: sName,
@@ -212,7 +230,7 @@ export default function ReportRecipients(props) {
 		Rest.read('reports', 'recipients', {}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -230,7 +248,7 @@ export default function ReportRecipients(props) {
 	function update(_id, name, addresses) {
 
 		// Find the record
-		let iIndex = Tools.afindi(reports, '_id', _id);
+		let iIndex = afindi(reports, '_id', _id);
 
 		// If we didn't find it
 		if(iIndex === -1) {
@@ -247,12 +265,12 @@ export default function ReportRecipients(props) {
 		}
 
 		// If the addresses changed
-		if(!Tools.compare(reports[iIndex].addresses, addresses)) {
+		if(!compare(reports[iIndex].addresses, addresses)) {
 			dData['addresses'] = addresses;
 		}
 
 		// If nothing changed
-		if(Tools.empty(dData)) {
+		if(empty(dData)) {
 			Events.trigger('warning', 'Nothing to save.');
 			return;
 		}
@@ -264,7 +282,7 @@ export default function ReportRecipients(props) {
 		Rest.update('reports', 'recipients', dData).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {

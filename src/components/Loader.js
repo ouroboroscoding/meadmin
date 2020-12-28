@@ -11,11 +11,11 @@
 // NPM modules
 import React, { useState } from 'react';
 
-// Generic modules
-import Events from  '../generic/events';
+// Shared generic modules
+import Events from  'shared/generic/events';
 
-// Hooks
-import { useEvent } from '../hooks/event';
+// Shared hooks
+import { useEvent } from 'shared/hooks/event';
 
 // Local variables
 let _count = 1;

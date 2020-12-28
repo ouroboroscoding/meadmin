@@ -29,31 +29,30 @@ import HttpsIcon from '@material-ui/icons/Https';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 // Components
-import ResultsComponent from '../../format/Results';
-import SearchComponent from '../../format/Search';
-import FormComponent from '../../format/Form';
+import ResultsComponent from 'shared/components/format/Results';
+import SearchComponent from 'shared/components/format/Search';
+import FormComponent from 'shared/components/format/Form';
 
 // Composites
 import Permissions from './Permissions';
 
-// Generic modules
-import Events from '../../../generic/events';
-import Rest from '../../../generic/rest';
-import Tools from '../../../generic/tools';
+// Shared communication modules
+import Rest from 'shared/communication/rest';
 
-// Local modules
-import Utils from '../../../utils';
+// Shared generic modules
+import Events from 'shared/generic/events';
+import { omap } from 'shared/generic/tools';
 
 // Definitions
-import UserDef from '../../../definitions/auth/user';
-import Divisions from '../../../definitions/divisions';
+import UserDef from 'definitions/auth/user';
+import Divisions from 'definitions/divisions';
 
 // Generate the user Tree
 const UserTree = new Tree(UserDef);
 
 // Update the division (state) info
 let oStateReact = UserTree.get('division').special('react');
-oStateReact.options = Tools.omap(Divisions.US, (v,k) => [k, v]);
+oStateReact.options = omap(Divisions.US, (v,k) => [k, v]);
 UserTree.get('division').special('react', oStateReact);
 
 /**
@@ -97,7 +96,7 @@ export default function Users(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -125,7 +124,7 @@ export default function Users(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -174,6 +173,7 @@ export default function Users(props) {
 			}
 			<SearchComponent
 				hash="users"
+				name="users"
 				noun="search"
 				service="auth"
 				success={search}

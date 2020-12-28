@@ -18,7 +18,7 @@ import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 
 // Generic modules
-import Tools from '../../../generic/tools';
+import { clone } from 'shared/generic/tools';
 
 // defines
 const CREATE = 4;
@@ -134,7 +134,7 @@ export default class Permissions extends React.Component {
 	change(name, rights) {
 
 		// Clone the current values
-		let value = Tools.clone(this.state.value);
+		let value = clone(this.state.value);
 
 		// If there are rights
 		if(rights) {
@@ -158,7 +158,7 @@ export default class Permissions extends React.Component {
 
 	render() {
 		return TYPES.map(section =>
-			<Paper id="permissions">
+			<Paper key={section.title} id="permissions">
 				<Grid container spacing={2}>
 					<Grid item xs={4} className="title"><span>{section.title}</span></Grid>
 					<Grid item xs={2} className="title"><span>Create</span></Grid>

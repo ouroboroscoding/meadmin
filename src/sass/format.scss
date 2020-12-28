@@ -22,3 +22,17 @@
 		width: 100%;
 	}
 }
+
+.selectSearchType {
+	height: 26px;
+	width: 100%;
+
+	select {
+		padding-bottom: 0;
+		padding-top: 0;
+	}
+}
+
+.selectSearchEmpty {
+	height: 26px;
+}
