@@ -19,12 +19,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
 
-// Generic modules
-import Events from '../generic/events';
-import Rest from '../generic/rest';
+// Shared communication modules
+import Rest from 'shared/communication/rest';
 
-// Local modules
-import Utils from '../utils';
+// Shared generic modules
+import Events from 'shared/generic/events';
 
 // Sign In
 export default function SignIn(props) {
@@ -43,7 +42,7 @@ export default function SignIn(props) {
 		Rest.read('auth', 'user', {}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -79,7 +78,7 @@ export default function SignIn(props) {
 		}, false).done(res => {
 
 			// If there's an error
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				switch(res.error.code) {
 					case 1001:
 						// Go through each message and mark the error

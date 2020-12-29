@@ -29,17 +29,19 @@ import GroupIcon from '@material-ui/icons/Group';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
 import PeopleIcon from '@material-ui/icons/People';
-
+import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 
 // Site components
 import Loader from './Loader';
 
-// Generic modules
-import Events from '../generic/events';
-import Rest from '../generic/rest';
+// Shared communication modules
+import Rest from 'shared/communication/rest';
+
+// Shared generic modules
+import Events from 'shared/generic/events';
 
 // Local modules
-import Utils from '../utils';
+import Utils from 'utils';
 
 // Header component
 export default function Header(props) {
@@ -112,7 +114,15 @@ export default function Header(props) {
 						<Link to="/agents" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><PeopleIcon /></ListItemIcon>
-								<ListItemText primary="Agents (CSR)" />
+								<ListItemText primary="Agents" />
+							</ListItem>
+						</Link>
+					}
+					{Utils.hasRight(props.user, 'csr_overwrite', 'read') &&
+						<Link to="/claims/agent" onClick={menuToggle}>
+							<ListItem button>
+								<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+								<ListItemText primary="Agent Claims" />
 							</ListItem>
 						</Link>
 					}

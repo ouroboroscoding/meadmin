@@ -35,24 +35,26 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import Permissions from './Permissions';
 
 // Format Components
-import ResultsComponent from '../../format/Results';
-import FormComponent from '../../format/Form';
-import { SelectData } from '../../format/Shared';
+import ResultsComponent from 'shared/components/format/Results';
+import FormComponent from 'shared/components/format/Form';
+import { SelectData } from 'shared/components/format/Shared';
 
-// Generic modules
-import Events from '../../../generic/events';
-import Rest from '../../../generic/rest';
-import Tools from '../../../generic/tools';
+// Shared communication modules
+import Rest from 'shared/communication/rest';
+
+// Shared generic modules
+import Events from 'shared/generic/events';
+import { afindi, clone, omap } from 'shared/generic/tools';
 
 // Local modules
-import Utils from '../../../utils';
+import Utils from 'utils';
 
 // Provider Definition
-import ProviderDef from '../../../definitions/providers/provider_memo';
+import ProviderDef from 'definitions/providers/provider_memo';
 
 // Data
-import Divisions from '../../../definitions/divisions';
-const _states = Tools.omap(Divisions['US'], (v,k) => [k,v]);
+import Divisions from 'definitions/divisions';
+const _states = omap(Divisions['US'], (v,k) => [k,v]);
 
 // Set the options for the ed and hrt practice states
 ProviderDef['practiceStates']['__react__']['options'] = _states
@@ -103,7 +105,7 @@ export default function Providers(props) {
 
 	function createSuccess(provider) {
 		providersSet(providers => {
-			let ret = Tools.clone(providers);
+			let ret = clone(providers);
 			ret.unshift(provider);
 			return ret;
 		});
@@ -117,7 +119,7 @@ export default function Providers(props) {
 		Rest.read('providers', 'providers', {}).done(res => {
 
 			// If there's an error
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 
@@ -146,7 +148,7 @@ export default function Providers(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -175,7 +177,7 @@ export default function Providers(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -198,7 +200,7 @@ export default function Providers(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -226,7 +228,7 @@ export default function Providers(props) {
 		}).done(res => {
 
 			// If there's an error or warning
-			if(res.error && !Utils.restError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', JSON.stringify(res.error));
 			}
 			if(res.warning) {
@@ -252,10 +254,10 @@ export default function Providers(props) {
 		providersSet(providers => {
 
 			// Clone the providers
-			let ret = Tools.clone(providers);
+			let ret = clone(providers);
 
 			// Find the index
-			let iIndex = Tools.afindi(ret, '_id', _id);
+			let iIndex = afindi(ret, '_id', _id);
 
 			// If one is found, remove it
 			if(iIndex > -1) {

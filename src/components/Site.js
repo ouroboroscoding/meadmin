@@ -13,14 +13,16 @@ import React, { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 
-// Generic modules
-import Events from '../generic/events';
-import Hash from '../generic/hash';
-import Rest from '../generic/rest';
+// Shared communication modules
+import Rest from 'shared/communication/rest';
 
-// Hooks
-import { useEvent } from '../hooks/event';
-import { useResize } from '../hooks/resize';
+// Shared generic modules
+import Events from 'shared/generic/events';
+import Hash from 'shared/generic/hash';
+
+// Shared hooks
+import { useEvent } from 'shared/hooks/event';
+import { useResize } from 'shared/hooks/resize';
 
 // Site component modules
 import Alerts from './Alerts';
@@ -30,15 +32,16 @@ import SignIn from './SignIn';
 
 // Page component modules
 import Agents from './pages/Agents';
+import ClaimsAgent from './pages/ClaimsAgent';
 import Providers from './pages/Providers';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
 
 // CSS
-import '../sass/site.scss';
+import 'sass/site.scss';
 
 // Init the rest services
-Rest.init(process.env.REACT_APP_MEMS_DOMAIN, xhr => {
+Rest.init(process.env.REACT_APP_MEMS_DOMAIN, process.env.REACT_APP_MEMS_DOMAIN, xhr => {
 
 	// If we got a 401, let everyone know we signed out
 	if(xhr.status === 401) {
@@ -50,9 +53,9 @@ Rest.init(process.env.REACT_APP_MEMS_DOMAIN, xhr => {
 			': ' + xhr.statusText +
 			' (' + xhr.status + ')');
 	}
-}, (method, url, data) => {
+}, (method, url, data, opts) => {
 	LoaderShow();
-}, (method, url, data) => {
+}, (method, url, data, opts) => {
 	LoaderHide();
 });
 
@@ -101,6 +104,12 @@ export default function Site(props) {
 					<Switch>
 						<Route exact path="/agents">
 							<Agents
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/claims/agent">
+							<ClaimsAgent
 								mobile={mobile}
 								user={user}
 							/>
