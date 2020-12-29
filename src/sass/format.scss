@@ -11,8 +11,10 @@
 
 .results {
 
-	.field__id, .actions {
-		padding: 0;
+	td {
+		.MuiIconButton-root {
+			padding: 0;
+		}
 	}
 }
 

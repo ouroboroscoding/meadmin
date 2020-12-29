@@ -29,6 +29,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
 import PeopleIcon from '@material-ui/icons/People';
+import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 
 // Site components
 import Loader from './Loader';
@@ -113,7 +114,15 @@ export default function Header(props) {
 						<Link to="/agents" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><PeopleIcon /></ListItemIcon>
-								<ListItemText primary="Agents (CSR)" />
+								<ListItemText primary="Agents" />
+							</ListItem>
+						</Link>
+					}
+					{Utils.hasRight(props.user, 'csr_overwrite', 'read') &&
+						<Link to="/claims/agent" onClick={menuToggle}>
+							<ListItem button>
+								<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+								<ListItemText primary="Agent Claims" />
 							</ListItem>
 						</Link>
 					}
