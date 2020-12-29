@@ -75,7 +75,7 @@ export default function SignIn(props) {
 		Rest.create('auth', 'signin', {
 			"email": emailRef.current.value,
 			"passwd": passwdRef.current.value
-		}, false).done(res => {
+		}, {session: false}).done(res => {
 
 			// If there's an error
 			if(res.error && !res._handled) {
