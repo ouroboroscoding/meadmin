@@ -9,8 +9,9 @@
  */
 
 // NPM modules
-import Tree from 'format-oc/Tree'
+import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
+import Tree from 'format-oc/Tree'
 
 // Material UI
 import Box from '@material-ui/core/Box';
@@ -149,8 +150,8 @@ export default function Users(props) {
 
 	// Render
 	return (
-		<Box id="users">
-			<Box className="pageHeader">
+		<Box id="users" className="page">
+			<Box className="page_header">
 				<Typography className="title">Users</Typography>
 				<Tooltip title="Create new User">
 					<IconButton onClick={createToggle}>
@@ -216,4 +217,10 @@ export default function Users(props) {
 			}
 		</Box>
 	);
+}
+
+// Valid props
+Users.propTypes = {
+	mobile: PropTypes.bool.isRequired,
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }

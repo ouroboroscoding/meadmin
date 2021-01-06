@@ -4,18 +4,17 @@
 /* variables */
 $menu-width: 250px;
 
+/* shared */
+@import '../shared/sass/format.scss';
+
 /* components */
-@import 'format';
 @import 'header';
 @import 'menu';
 @import 'signin';
 
 /* pages */
-@import 'pages/agents';
-@import 'pages/claimsagent';
-@import 'pages/providers';
+@import 'pages/permissions';
 @import 'pages/reports';
-@import 'pages/users';
 
 /* site */
 html, body, #root, #site, #content {
@@ -69,10 +68,15 @@ td {
 	flex-direction: column;
 }
 
+#header {
+	z-index: 10;
+}
+
 #content {
 	flex-basis: 0;
 	flex-grow: 1;
 	flex-shrink: 1;
+	overflow: auto;
 }
 
 /* classes */
@@ -117,10 +121,14 @@ td {
 	}
 }
 
-.pageHeader {
+.page {
+	padding: 10px;
+}
+
+.page_header {
 	display: flex;
 
-	.MuiTypography-root {
+	.title {
 		flex-grow: 1;
 		font-size: 2rem;
 		font-weight: 400;
@@ -136,6 +144,7 @@ td {
 		}
 	}
 }
+
 
 .right20 {
 	margin: 10px 20px 10px 0;

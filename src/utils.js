@@ -50,6 +50,22 @@ const Utils = {
 		return this.date(ts) + ' ' + t.join(':')
 	},
 
+	getIdents: function(user, name) {
+
+		// If we have no user
+		if(!user) {
+			return false;
+		}
+
+		// If the user doesn't have the right
+		if(!(name in user.permissions)) {
+			return false;
+		}
+
+		// Return the ident
+		return user.permissions[name].idents || [];
+	},
+
 	hasRight: function(user, name, type) {
 
 		// If we have no user

@@ -9,8 +9,9 @@
  */
 
 // NPM modules
-import Tree from 'format-oc/Tree'
+import PropTypes from 'prop-types';
 import React, { useRef, useState, useEffect } from 'react';
+import Tree from 'format-oc/Tree'
 
 // Material UI
 import Box from '@material-ui/core/Box';
@@ -271,136 +272,140 @@ export default function Providers(props) {
 
 	// Return the rendered component
 	return (
-		<div id="providers">
-			<div className="providers">
-				<Box className="pageHeader">
-					<Typography className="title">Providers</Typography>
-					{Utils.hasRight(props.user, 'providers', 'create') &&
-						<React.Fragment>
-							<Tooltip title="Import Memo User">
-								<IconButton onClick={ev => memoSet(b => !b)}>
-									<PersonAddIcon />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Create New Provider">
-								<IconButton onClick={ev => createSet(b => !b)}>
-									<AddCircleIcon />
-								</IconButton>
-							</Tooltip>
-						</React.Fragment>
-					}
-				</Box>
-				{create &&
-					<Paper className="padded">
-						<FormComponent
-							cancel={ev => createSet(b => !b)}
-							errors={{
-								1501: "Username already in use",
-								1502: "Password not strong enough"
-							}}
-							noun="provider"
-							service="providers"
-							success={createSuccess}
-							title="Create New"
-							tree={ProviderTree}
-							type="create"
-						/>
-					</Paper>
+		<Box id="providers" className="page">
+			<Box className="page_header">
+				<Typography className="title">Providers</Typography>
+				{Utils.hasRight(props.user, 'providers', 'create') &&
+					<React.Fragment>
+						<Tooltip title="Import Memo User">
+							<IconButton onClick={ev => memoSet(b => !b)}>
+								<PersonAddIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Create New Provider">
+							<IconButton onClick={ev => createSet(b => !b)}>
+								<AddCircleIcon />
+							</IconButton>
+						</Tooltip>
+					</React.Fragment>
 				}
-
-				{providers === null ?
-					<div>Loading...</div>
-				:
-					<ResultsComponent
-						actions={[
-							{"tooltip": "Edit Provider's permissions", "icon": HttpsIcon, "callback": permissionsShow},
-							{"tooltip": "Change Provider's password", "icon": VpnKeyIcon, "callback": provider_id => passwordSet(provider_id)}
-						]}
-						data={providers}
+			</Box>
+			{create &&
+				<Paper className="padded">
+					<FormComponent
+						cancel={ev => createSet(b => !b)}
 						errors={{
 							1501: "Username already in use",
+							1502: "Password not strong enough"
 						}}
 						noun="provider"
-						orderBy="userName"
-						remove={Utils.hasRight(props.user, 'providers', 'delete') ? removeProvider : false}
 						service="providers"
+						success={createSuccess}
+						title="Create New"
 						tree={ProviderTree}
-						update={Utils.hasRight(props.user, 'providers', 'update')}
+						type="create"
 					/>
-				}
-				{permissions &&
-					<Dialog
-						aria-labelledby="confirmation-dialog-title"
-						maxWidth="lg"
-						onClose={ev => permissionsSet(false)}
-						open={true}
-					>
-						<DialogTitle id="permissions-dialog-title">Update Permissions</DialogTitle>
-						<DialogContent dividers>
-							<Permissions
-								ref={permsRef}
-								value={permissions.rights}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={ev => permissionsSet(false)}>
-								Cancel
-							</Button>
-							<Button variant="contained" color="primary" onClick={permissionsUpdate}>
-								Update
-							</Button>
-						</DialogActions>
-					</Dialog>
-				}
-				{password &&
-					<Dialog
-						aria-labelledby="confirmation-dialog-title"
-						maxWidth="lg"
-						onClose={() => passwordSet(false)}
-						open={true}
-					>
-						<DialogTitle id="password-dialog-title">Update Password</DialogTitle>
-						<DialogContent dividers>
-							<TextField
-								label="New Password"
-								inputRef={passwdRef}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={() => passwordSet(false)}>
-								Cancel
-							</Button>
-							<Button variant="contained" color="primary" onClick={passwordUpdate}>
-								Update
-							</Button>
-						</DialogActions>
-					</Dialog>
-				}
-				{memo &&
-					<Dialog
-						aria-labelledby="memo-dialog-title"
-						maxWidth="lg"
-						onClose={ev => memoSet(false)}
-						open={true}
-					>
-						<DialogTitle id="memo-dialog-title">Import Memo User</DialogTitle>
-						<DialogContent dividers>
-							<TextField
-								label="User Name"
-								inputRef={memoRef}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={ev => memoSet(false)}>
-								Cancel
-							</Button>
-							<Button variant="contained" color="primary" onClick={memoImport}>
-								Import User
-							</Button>
-						</DialogActions>
-					</Dialog>
-				}
-			</div>
-		</div>
+				</Paper>
+			}
+
+			{providers === null ?
+				<Box>Loading...</Box>
+			:
+				<ResultsComponent
+					actions={[
+						{"tooltip": "Edit Provider's permissions", "icon": HttpsIcon, "callback": permissionsShow},
+						{"tooltip": "Change Provider's password", "icon": VpnKeyIcon, "callback": provider_id => passwordSet(provider_id)}
+					]}
+					data={providers}
+					errors={{
+						1501: "Username already in use",
+					}}
+					noun="provider"
+					orderBy="userName"
+					remove={Utils.hasRight(props.user, 'providers', 'delete') ? removeProvider : false}
+					service="providers"
+					tree={ProviderTree}
+					update={Utils.hasRight(props.user, 'providers', 'update')}
+				/>
+			}
+			{permissions &&
+				<Dialog
+					aria-labelledby="confirmation-dialog-title"
+					maxWidth="lg"
+					onClose={ev => permissionsSet(false)}
+					open={true}
+				>
+					<DialogTitle id="permissions-dialog-title">Update Permissions</DialogTitle>
+					<DialogContent dividers>
+						<Permissions
+							ref={permsRef}
+							value={permissions.rights}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={ev => permissionsSet(false)}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={permissionsUpdate}>
+							Update
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+			{password &&
+				<Dialog
+					aria-labelledby="confirmation-dialog-title"
+					maxWidth="lg"
+					onClose={() => passwordSet(false)}
+					open={true}
+				>
+					<DialogTitle id="password-dialog-title">Update Password</DialogTitle>
+					<DialogContent dividers>
+						<TextField
+							label="New Password"
+							inputRef={passwdRef}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={() => passwordSet(false)}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={passwordUpdate}>
+							Update
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+			{memo &&
+				<Dialog
+					aria-labelledby="memo-dialog-title"
+					maxWidth="lg"
+					onClose={ev => memoSet(false)}
+					open={true}
+				>
+					<DialogTitle id="memo-dialog-title">Import Memo User</DialogTitle>
+					<DialogContent dividers>
+						<TextField
+							label="User Name"
+							inputRef={memoRef}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={ev => memoSet(false)}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={memoImport}>
+							Import User
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+		</Box>
 	);
+}
+
+// Valid props
+Providers.propTypes = {
+	mobile: PropTypes.bool.isRequired,
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }

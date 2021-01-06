@@ -9,8 +9,9 @@
  */
 
 // NPM modules
-import Tree from 'format-oc/Tree'
+import PropTypes from 'prop-types';
 import React, { useRef, useState, useEffect } from 'react';
+import Tree from 'format-oc/Tree'
 
 // Material UI
 import Box from '@material-ui/core/Box';
@@ -232,105 +233,109 @@ export default function Agents(props) {
 
 	// Return the rendered component
 	return (
-		<div id="agents">
-			<div className="agents">
-				<Box className="pageHeader">
-					<Typography className="title">Agents</Typography>
-					{Utils.hasRight(props.user, 'csr_agents', 'create') &&
-						<Tooltip title="Create new agent">
-							<IconButton onClick={createToggle}>
-								<AddCircleIcon />
-							</IconButton>
-						</Tooltip>
-					}
-				</Box>
-				{create &&
-					<Paper className="padded">
-						<FormComponent
-							cancel={createToggle}
-							errors={{
-								1501: "Username already in use",
-								1502: "Password not strong enough"
-							}}
-							noun="agent"
-							service="csr"
-							success={createSuccess}
-							title="Create New"
-							tree={AgentTree}
-							type="create"
-						/>
-					</Paper>
+		<Box id="agents" className="page">
+			<Box className="page_header">
+				<Typography className="title">Agents</Typography>
+				{Utils.hasRight(props.user, 'csr_agents', 'create') &&
+					<Tooltip title="Create new agent">
+						<IconButton onClick={createToggle}>
+							<AddCircleIcon />
+						</IconButton>
+					</Tooltip>
 				}
-
-				{agents === null ?
-					<div>Loading...</div>
-				:
-					<ResultsComponent
-						actions={[
-							{"tooltip": "Edit Agent's permissions", "icon": HttpsIcon, "callback": permissionsShow},
-							{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent_id => passwordSet(agent_id)}
-						]}
-						data={agents}
+			</Box>
+			{create &&
+				<Paper className="padded">
+					<FormComponent
+						cancel={createToggle}
 						errors={{
 							1501: "Username already in use",
+							1502: "Password not strong enough"
 						}}
 						noun="agent"
-						orderBy="userName"
-						remove={Utils.hasRight(props.user, 'csr_agents', 'delete') ? removeAgent : false}
 						service="csr"
+						success={createSuccess}
+						title="Create New"
 						tree={AgentTree}
-						update={Utils.hasRight(props.user, 'csr_agents', 'update')}
+						type="create"
 					/>
-				}
-				{permissions &&
-					<Dialog
-						aria-labelledby="confirmation-dialog-title"
-						maxWidth="lg"
-						onClose={permissionsCancel}
-						open={true}
-					>
-						<DialogTitle id="permissions-dialog-title">Update Permissions</DialogTitle>
-						<DialogContent dividers>
-							<Permissions
-								ref={permsRef}
-								value={permissions.rights}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={permissionsCancel}>
-								Cancel
-							</Button>
-							<Button variant="contained" color="primary" onClick={permissionsUpdate}>
-								Update
-							</Button>
-						</DialogActions>
-					</Dialog>
-				}
-				{password &&
-					<Dialog
-						aria-labelledby="confirmation-dialog-title"
-						maxWidth="lg"
-						onClose={() => passwordSet(false)}
-						open={true}
-					>
-						<DialogTitle id="password-dialog-title">Update Password</DialogTitle>
-						<DialogContent dividers>
-							<TextField
-								label="New Password"
-								inputRef={passwdRef}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="secondary" onClick={() => passwordSet(false)}>
-								Cancel
-							</Button>
-							<Button variant="contained" color="primary" onClick={passwordUpdate}>
-								Update
-							</Button>
-						</DialogActions>
-					</Dialog>
-				}
-			</div>
-		</div>
+				</Paper>
+			}
+
+			{agents === null ?
+				<Box>Loading...</Box>
+			:
+				<ResultsComponent
+					actions={[
+						{"tooltip": "Edit Agent's permissions", "icon": HttpsIcon, "callback": permissionsShow},
+						{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent_id => passwordSet(agent_id)}
+					]}
+					data={agents}
+					errors={{
+						1501: "Username already in use",
+					}}
+					noun="agent"
+					orderBy="userName"
+					remove={Utils.hasRight(props.user, 'csr_agents', 'delete') ? removeAgent : false}
+					service="csr"
+					tree={AgentTree}
+					update={Utils.hasRight(props.user, 'csr_agents', 'update')}
+				/>
+			}
+			{permissions &&
+				<Dialog
+					aria-labelledby="confirmation-dialog-title"
+					maxWidth="lg"
+					onClose={permissionsCancel}
+					open={true}
+				>
+					<DialogTitle id="permissions-dialog-title">Update Permissions</DialogTitle>
+					<DialogContent dividers>
+						<Permissions
+							ref={permsRef}
+							value={permissions.rights}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={permissionsCancel}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={permissionsUpdate}>
+							Update
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+			{password &&
+				<Dialog
+					aria-labelledby="confirmation-dialog-title"
+					maxWidth="lg"
+					onClose={() => passwordSet(false)}
+					open={true}
+				>
+					<DialogTitle id="password-dialog-title">Update Password</DialogTitle>
+					<DialogContent dividers>
+						<TextField
+							label="New Password"
+							inputRef={passwdRef}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={() => passwordSet(false)}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={passwordUpdate}>
+							Update
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+		</Box>
 	);
+}
+
+// Valid props
+Agents.propTypes = {
+	mobile: PropTypes.bool.isRequired,
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }

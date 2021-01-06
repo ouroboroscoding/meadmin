@@ -9,8 +9,9 @@
  */
 
 // NPM modules
-import Tree from 'format-oc/Tree'
+import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
+import Tree from 'format-oc/Tree'
 
 // Material UI
 import Box from '@material-ui/core/Box';
@@ -62,7 +63,7 @@ export default function ClaimsAgent(props) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]); // React to user changes
 
-	// Fetch all the agents from the server
+	// Fetch all the claims from the server
 	function fetchClaims() {
 
 		// Fetch all agents
@@ -109,26 +110,29 @@ export default function ClaimsAgent(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="claimsAgent">
-			<Box className="claims">
-				<Box className="pageHeader">
-					<Typography className="title">Claims by Agents</Typography>
-				</Box>
-
-				{claims === null ?
-					<Box>Loading...</Box>
-				:
-					<ResultsComponent
-						data={claims}
-						noun="agent/claim"
-						orderBy="createdAt"
-						remove={Utils.hasRight(props.user, 'csr_overwrite', 'delete') ? removeClaim : false}
-						service="monolith"
-						tree={ClaimTree}
-						update={false}
-					/>
-				}
+		<Box id="claimsAgent" class="page">
+			<Box className="page_header">
+				<Typography className="title">Claims by Agents</Typography>
 			</Box>
+			{claims === null ?
+				<Box>Loading...</Box>
+			:
+				<ResultsComponent
+					data={claims}
+					noun="agent/claim"
+					orderBy="createdAt"
+					remove={Utils.hasRight(props.user, 'csr_overwrite', 'delete') ? removeClaim : false}
+					service="monolith"
+					tree={ClaimTree}
+					update={false}
+				/>
+			}
 		</Box>
 	);
+}
+
+// Valid props
+ClaimsAgent.propTypes = {
+	mobile: PropTypes.bool.isRequired,
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }

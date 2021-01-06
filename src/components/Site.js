@@ -33,6 +33,7 @@ import SignIn from './SignIn';
 // Page component modules
 import Agents from './pages/Agents';
 import ClaimsAgent from './pages/ClaimsAgent';
+import PharmacyProducts from './pages/Pharmacy/Products';
 import Providers from './pages/Providers';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
@@ -110,6 +111,12 @@ export default function Site(props) {
 						</Route>
 						<Route exact path="/claims/agent">
 							<ClaimsAgent
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/pharmacy/products">
+							<PharmacyProducts
 								mobile={mobile}
 								user={user}
 							/>

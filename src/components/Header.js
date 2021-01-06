@@ -9,11 +9,15 @@
  */
 
 // NPM modules
-import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // Material UI
+import Collapse from '@material-ui/core/Collapse';
 import Drawer from '@material-ui/core/Drawer';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -25,7 +29,9 @@ import Typography from '@material-ui/core/Typography';
 // Material UI Icons
 import EmailIcon from '@material-ui/icons/Email';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import GroupIcon from '@material-ui/icons/Group';
+import LocalPharmacyIcon from '@material-ui/icons/LocalPharmacy';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
 import PeopleIcon from '@material-ui/icons/People';
@@ -39,15 +45,40 @@ import Rest from 'shared/communication/rest';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
+import { safeLocalStorageBool } from 'shared/generic/tools';
 
 // Local modules
 import Utils from 'utils';
+
+// No Rights
+const _NO_RIGHTS = {
+	csr_agents: false,
+	csr_overwrite: false,
+	providers: false,
+	report_recipients: false,
+	rx_product: false,
+	user: false
+}
 
 // Header component
 export default function Header(props) {
 
 	// State
 	let [menu, menuSet] = useState(false);
+	let [pharmacy, pharmacySet] = useState(safeLocalStorageBool('menuPharmacy'));
+	let [rights, rightsSet] = useState(_NO_RIGHTS);
+
+	// User effect
+	useEffect(() => {
+		rightsSet(props.user ? {
+			csr_agents: Utils.hasRight(props.user, 'csr_agents', 'read'),
+			csr_overwrite: Utils.hasRight(props.user, 'csr_overwrite', 'read'),
+			providers: Utils.hasRight(props.user, 'providers', 'read'),
+			report_recipients: Utils.hasRight(props.user, 'report_recipients', 'read'),
+			rx_product: Utils.hasRight(props.user, 'rx_product', 'read'),
+			user: Utils.hasRight(props.user, 'user', 'read')
+		} : _NO_RIGHTS);
+	}, [props.user])
 
 	// Show/Hide menu
 	function menuToggle() {
@@ -110,7 +141,7 @@ export default function Header(props) {
 				onClose={menuToggle}
 			>
 				<List>
-					{Utils.hasRight(props.user, 'csr_agents', 'read') &&
+					{rights.csr_agents &&
 						<Link to="/agents" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><PeopleIcon /></ListItemIcon>
@@ -118,7 +149,7 @@ export default function Header(props) {
 							</ListItem>
 						</Link>
 					}
-					{Utils.hasRight(props.user, 'csr_overwrite', 'read') &&
+					{rights.csr_overwrite &&
 						<Link to="/claims/agent" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
@@ -126,7 +157,26 @@ export default function Header(props) {
 							</ListItem>
 						</Link>
 					}
-					{Utils.hasRight(props.user, 'providers', 'read') &&
+					{rights.rx_product &&
+						<React.Fragment>
+							<ListItem button key="Pharmacy" onClick={ev => { pharmacySet(b => { localStorage.setItem('menuPharmacy', b ? '' : 'x'); return !b;})}}>
+								<ListItemIcon><LocalPharmacyIcon /></ListItemIcon>
+								<ListItemText primary="Pharmacy" />
+								{pharmacy ? <ExpandLess /> : <ExpandMore />}
+							</ListItem>
+							<Collapse in={pharmacy} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									<Link to="/pharmacy/products" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
+											<ListItemText primary="Product to NDC" />
+										</ListItem>
+									</Link>
+								</List>
+							</Collapse>
+						</React.Fragment>
+					}
+					{rights.providers &&
 						<Link to="/providers" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><LocalHospitalIcon /></ListItemIcon>
@@ -134,7 +184,7 @@ export default function Header(props) {
 							</ListItem>
 						</Link>
 					}
-					{Utils.hasRight(props.user, 'report_recipients', 'read') &&
+					{rights.report_recipients &&
 						<Link to="/reports" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><EmailIcon /></ListItemIcon>
@@ -142,7 +192,7 @@ export default function Header(props) {
 							</ListItem>
 						</Link>
 					}
-					{Utils.hasRight(props.user, 'user', 'read') &&
+					{rights.user &&
 						<Link to="/users" onClick={menuToggle}>
 							<ListItem button>
 								<ListItemIcon><GroupIcon /></ListItemIcon>
@@ -154,4 +204,10 @@ export default function Header(props) {
 			</Drawer>
 		</div>
 	);
+}
+
+// Valid props
+Header.propTypes = {
+	mobile: PropTypes.bool.isRequired,
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }
