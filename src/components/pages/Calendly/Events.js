@@ -1,11 +1,11 @@
 /**
- * Pharmacy Products
+ * Calendly Events
  *
- * Page to manage products and their NDCs by pharmacy
+ * Page to manage calendly events (rooms)
  *
  * @author Chris Nasr <bast@maleexcel.com>
  * @copyright MaleExcelMedical
- * @created 2021-01-05
+ * @created 2021-01-06
  */
 
 // NPM modules
@@ -26,46 +26,56 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 // Format Components
 import FormComponent from 'shared/components/format/Form';
 import ResultsComponent from 'shared/components/format/Results';
+import { SelectData } from 'shared/components/format/Shared';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { afindi, clone } from 'shared/generic/tools';
+import { afindi, clone, omap } from 'shared/generic/tools';
 
 // Local modules
 import Utils from 'utils';
 
 // Agent Definition
-import ProductDef from 'definitions/prescriptions/product';
+import CalendlyEventDef from 'definitions/monolith/calendly_event';
+
+// Data
+import Divisions from 'definitions/divisions';
+
+// Map the states
+const _states = omap(Divisions['US'], (v,k) => [k,v]);
+
+// Set the custom data
+CalendlyEventDef['state']['__react__']['options'] = _states
+CalendlyEventDef['provider']['__react__']['options'] = new SelectData('monolith', 'providers', 'id', 'name');
 
 // Generate the agent Tree
-const ProductTree = new Tree(ProductDef);
+const CalendlyEventTree = new Tree(CalendlyEventDef);
 
 // Default set of rights when no user
 const _NO_RIGHTS = {
 	create: false,
 	delete: false,
-	update: false,
-	pharmacy: false
+	update: false
 }
 
 /**
- * Products
+ * Calendly Events
  *
- * Lists all products available to the signed in user
+ * Lists all calendly events available
  *
- * @name Products
+ * @name CalendlyEvents
  * @access public
  * @param Object props Attributes sent to the component
  * @returns React.Component
  */
-export default function Products(props) {
+export default function CalendlyEvents(props) {
 
 	// State
 	let [create, createSet] = useState(false);
-	let [products, productsSet] = useState(null);
+	let [events, eventsSet] = useState(null);
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
 
 	// Effects
@@ -73,67 +83,66 @@ export default function Products(props) {
 
 		// If we have a user
 		if(props.user) {
-			productsFetch();
+			eventsFetch();
 			rightsSet({
-				create: Utils.hasRight(props.user, 'rx_product', 'create'),
-				delete: Utils.hasRight(props.user, 'rx_product', 'delete'),
-				update: Utils.hasRight(props.user, 'rx_product', 'update'),
-				pharmacy: Utils.getIdents(props.user, 'rx_product')
+				create: Utils.hasRight(props.user, 'calendly_admin', 'create'),
+				delete: Utils.hasRight(props.user, 'calendly_admin', 'delete'),
+				update: Utils.hasRight(props.user, 'calendly_admin', 'update')
 			})
 		} else {
-			productsSet(null);
+			eventsSet(null);
 			rightsSet(_NO_RIGHTS);
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]); // React to user changes
 
-	// Add the created product to the list
-	function productCreated(product) {
+	// Add the created event to the list
+	function eventCreated(event) {
 
 		// Hide the create form
 		createSet(false);
 
-		// Use the current products to set the new products
-		productsSet(products => {
+		// Use the current events to set the new events
+		eventsSet(events => {
 
-			// Clone the products
-			let ret = clone(products);
+			// Clone the events
+			let ret = clone(events);
 
-			// Add the product to the front of the list
-			ret.unshift(product);
+			// Add the event to the front of the list
+			ret.unshift(event);
 
-			// Return the new products
+			// Return the new events
 			return ret;
 		})
 	}
 
-	// Remove a product
-	function productRemove(_id) {
+	// Remove a event
+	function eventRemove(id) {
 
-		// Use the current products to set the new products
-		productsSet(products => {
+		// Use the current events to set the new events
+		eventsSet(events => {
 
-			// Clone the products
-			let ret = clone(products);
+			// Clone the events
+			let ret = clone(events);
 
 			// Find the index
-			let iIndex = afindi(ret, '_id', _id);
+			let iIndex = afindi(ret, 'id', id);
 
 			// If one is found, remove it
 			if(iIndex > -1) {
 				ret.splice(iIndex, 1);
 			}
 
-			// Return the new products
+			// Return the new events
 			return ret;
 		});
 	}
 
-	// Fetch all the products from the server
-	function productsFetch() {
+	// Fetch all the events from the server
+	function eventsFetch() {
 
-		// Fetch all products
-		Rest.read('prescriptions', 'products', {}).done(res => {
+		// Fetch all events
+		Rest.read('monolith', 'calendly/events', {}).done(res => {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
@@ -146,41 +155,41 @@ export default function Products(props) {
 			// If there's data
 			if(res.data) {
 
-				// Set the products
-				productsSet(res.data);
+				// Set the events
+				eventsSet(res.data);
 			}
 		});
 	}
 
-	// Update a product
-	function productUpdate(product) {
+	// Update a event
+	function eventUpdate(event) {
 
-		// Use the current products to set the new products
-		productsSet(products => {
+		// Use the current events to set the new events
+		eventsSet(events => {
 
-			// Clone the products
-			let ret = clone(products);
+			// Clone the events
+			let ret = clone(events);
 
 			// Find the index
-			let iIndex = afindi(ret, '_id', product._id);
+			let iIndex = afindi(ret, 'id', event.id);
 
 			// If one is found, update it
 			if(iIndex > -1) {
-				ret[iIndex] = product;
+				ret[iIndex] = event;
 			}
 
-			// Return the new products
+			// Return the new events
 			return ret;
 		});
 	}
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyProducts" class="page">
+		<Box id="pharmacyCalendlyEvents" className="page">
 			<Box className="page_header">
-				<Typography className="title">Products to NDCs</Typography>
+				<Typography className="title">Calendly Events</Typography>
 				{rights.create &&
-					<Tooltip title="Create new Product">
+					<Tooltip title="Create new Event">
 						<IconButton onClick={ev => createSet(b => !b)}>
 							<AddCircleIcon className="icon" />
 						</IconButton>
@@ -191,28 +200,25 @@ export default function Products(props) {
 				<Paper className="padded">
 					<FormComponent
 						cancel={ev => createSet(false)}
-						noun="product"
-						service="prescriptions"
-						success={productCreated}
-						tree={ProductTree}
+						noun="calendly/event"
+						service="monolith"
+						success={eventCreated}
+						tree={CalendlyEventTree}
 						type="create"
-						value={{
-							pharmacy: rights.pharmacy ? rights.pharmacy[0] : ''
-						}}
 					/>
 				</Paper>
 			}
-			{products === null ?
+			{events === null ?
 				<Box>Loading...</Box>
 			:
 				<ResultsComponent
-					data={products}
-					noun="product"
+					data={events}
+					noun="calendly/event"
 					orderBy="key"
-					remove={rights.delete ? productRemove : false}
-					service="prescriptions"
-					tree={ProductTree}
-					update={rights.update ? productUpdate : false}
+					remove={rights.delete ? eventRemove : false}
+					service="monolith"
+					tree={CalendlyEventTree}
+					update={rights.update ? eventUpdate : false}
 				/>
 			}
 		</Box>
@@ -220,7 +226,7 @@ export default function Products(props) {
 }
 
 // Valid props
-Products.propTypes = {
+CalendlyEvents.propTypes = {
 	mobile: PropTypes.bool.isRequired,
 	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }

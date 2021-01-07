@@ -66,6 +66,7 @@ const TYPES = [
 		{name: "welldyne_outbound", title: "WellDyneRX Outbound", allowed: READ | UPDATE}
 	]},
 	{title: "Admin", rights: [
+		{name: "calendly_admin", title: "Calendly", allowed: ALL},
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
 		{name: "manual_adhoc", title: "Manual AdHoc", allowed: ALL},
 		{name: "report_recipients", title: "Report Recipients", allowed: ALL}

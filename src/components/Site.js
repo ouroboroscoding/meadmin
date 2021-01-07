@@ -32,6 +32,7 @@ import SignIn from './SignIn';
 
 // Page component modules
 import Agents from './pages/Agents';
+import CalendlyEvents from './pages/Calendly/Events';
 import ClaimsAgent from './pages/ClaimsAgent';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import Providers from './pages/Providers';
@@ -105,6 +106,12 @@ export default function Site(props) {
 					<Switch>
 						<Route exact path="/agents">
 							<Agents
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/calendly/events">
+							<CalendlyEvents
 								mobile={mobile}
 								user={user}
 							/>

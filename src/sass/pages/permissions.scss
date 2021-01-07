@@ -3,7 +3,9 @@
 	padding: 10px;
 
 	.title {
-		font-weight: bold;
+		.MuiTypography-root {
+			font-weight: bold;
+		}
 	}
 
 	.name {

@@ -29,6 +29,7 @@ import Typography from '@material-ui/core/Typography';
 // Material UI Icons
 import EmailIcon from '@material-ui/icons/Email';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import EventIcon from '@material-ui/icons/Event';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import GroupIcon from '@material-ui/icons/Group';
 import LocalPharmacyIcon from '@material-ui/icons/LocalPharmacy';
@@ -36,6 +37,7 @@ import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
 import PeopleIcon from '@material-ui/icons/People';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+import TodayIcon from '@material-ui/icons/Today';
 
 // Site components
 import Loader from './Loader';
@@ -52,6 +54,7 @@ import Utils from 'utils';
 
 // No Rights
 const _NO_RIGHTS = {
+	calendly_admin: false,
 	csr_agents: false,
 	csr_overwrite: false,
 	providers: false,
@@ -65,12 +68,14 @@ export default function Header(props) {
 
 	// State
 	let [menu, menuSet] = useState(false);
+	let [calendly, calendlySet] = useState(safeLocalStorageBool('menuCalendly'));
 	let [pharmacy, pharmacySet] = useState(safeLocalStorageBool('menuPharmacy'));
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
 
 	// User effect
 	useEffect(() => {
 		rightsSet(props.user ? {
+			calendly_admin: Utils.hasRight(props.user, 'calendly_admin', 'read'),
 			csr_agents: Utils.hasRight(props.user, 'csr_agents', 'read'),
 			csr_overwrite: Utils.hasRight(props.user, 'csr_overwrite', 'read'),
 			providers: Utils.hasRight(props.user, 'providers', 'read'),
@@ -156,6 +161,25 @@ export default function Header(props) {
 								<ListItemText primary="Agent Claims" />
 							</ListItem>
 						</Link>
+					}
+					{rights.calendly_admin &&
+						<React.Fragment>
+							<ListItem button key="Calendly" onClick={ev => { calendlySet(b => { localStorage.setItem('menuCalendly', b ? '' : 'x'); return !b;})}}>
+								<ListItemIcon><TodayIcon /></ListItemIcon>
+								<ListItemText primary="Calendly" />
+								{calendly ? <ExpandLess /> : <ExpandMore />}
+							</ListItem>
+							<Collapse in={calendly} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									<Link to="/calendly/events" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><EventIcon /></ListItemIcon>
+											<ListItemText primary="Events (Rooms)" />
+										</ListItem>
+									</Link>
+								</List>
+							</Collapse>
+						</React.Fragment>
 					}
 					{rights.rx_product &&
 						<React.Fragment>
