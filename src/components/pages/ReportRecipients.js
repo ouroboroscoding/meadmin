@@ -9,6 +9,7 @@
  */
 
 // NPM modules
+import PropTypes from 'prop-types';
 import React, { useRef, useState, useEffect } from 'react';
 
 // Material UI
@@ -343,4 +344,10 @@ export default function ReportRecipients(props) {
 			)}
 		</Box>
 	);
+}
+
+// Valid props
+ReportRecipients.propTypes = {
+	mobile: PropTypes.bool.isRequired,
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }
