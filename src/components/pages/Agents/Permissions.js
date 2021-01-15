@@ -36,7 +36,8 @@ const TYPES = [
 		{name: "csr_stats", title: "Stats: Allowed to view stats", allowed: READ}
 	]},
 	{title: "CRM", rights: [
-		{name: "customers", title: "CRM Data", allowed: READ}
+		{name: "customers", title: "Customers", allowed: READ | UPDATE},
+		{name: "orders", title: "Orders", allowed: READ | UPDATE}
 	]},
 	{title: "Patient Portal", rights: [
 		{name: "patient_account", title: "Account", allowed: CREATE | READ | UPDATE}
@@ -47,7 +48,7 @@ const TYPES = [
 		{name: "memo_notes", title: "Memo Notes", allowed: READ | CREATE}
 	]},
 	{title: "Pharmacy", rights: [
-		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE},
+		{name: "prescriptions", title: "Prescriptions", allowed: CREATE | READ | UPDATE},
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
 		{name: "welldyne_adhoc", title: "Adhoc", allowed: CREATE | READ | DELETE},
 		{name: "welldyne_never_started", title: "Never Started", allowed: READ | UPDATE | DELETE},
