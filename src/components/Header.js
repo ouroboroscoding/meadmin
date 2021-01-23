@@ -14,6 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // Material UI
+import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import Drawer from '@material-ui/core/Drawer';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -36,10 +37,12 @@ import LocalPharmacyIcon from '@material-ui/icons/LocalPharmacy';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
 import PeopleIcon from '@material-ui/icons/People';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 import TodayIcon from '@material-ui/icons/Today';
 
 // Site components
+import Account from './Account';
 import Loader from './Loader';
 
 // Shared communication modules
@@ -67,6 +70,7 @@ const _NO_RIGHTS = {
 export default function Header(props) {
 
 	// State
+	let [account, accountSet] = useState(false);
 	let [menu, menuSet] = useState(false);
 	let [calendly, calendlySet] = useState(safeLocalStorageBool('menuCalendly'));
 	let [pharmacy, pharmacySet] = useState(safeLocalStorageBool('menuPharmacy'));
@@ -120,25 +124,32 @@ export default function Header(props) {
 
 	// Render
 	return (
-		<div id="header">
-			<div className="bar">
+		<Box id="header">
+			<Box className="bar">
 				<IconButton edge="start" color="inherit" aria-label="menu" onClick={menuToggle}>
 					<MenuIcon />
 				</IconButton>
-				<div><Typography className="title">
+				<Box><Typography className="title">
 					<Link to="/" onClick={menuToggle}>{props.mobile ? 'ME Admin' : 'Male Excel Admin'}</Link>
-				</Typography></div>
-				<div id="loaderWrapper">
+				</Typography></Box>
+				<Box id="loaderWrapper">
 					<Loader />
-				</div>
+				</Box>
 				{props.user &&
-					<Tooltip title="Sign Out">
-						<IconButton onClick={signout}>
-							<ExitToAppIcon />
-						</IconButton>
-					</Tooltip>
+					<React.Fragment>
+						<Tooltip title="Account">
+							<IconButton onClick={ev => accountSet(b => !b)}>
+								<PermIdentityIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Sign Out">
+							<IconButton onClick={signout}>
+								<ExitToAppIcon />
+							</IconButton>
+						</Tooltip>
+					</React.Fragment>
 				}
-			</div>
+			</Box>
 			<Drawer
 				anchor="left"
 				id="menu"
@@ -226,7 +237,13 @@ export default function Header(props) {
 					}
 				</List>
 			</Drawer>
-		</div>
+			{account &&
+				<Account
+					onCancel={ev => accountSet(false)}
+					user={props.user}
+				/>
+			}
+		</Box>
 	);
 }
 
