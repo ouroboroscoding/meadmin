@@ -26,6 +26,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 // Format Components
 import FormComponent from 'shared/components/format/Form';
 import ResultsComponent from 'shared/components/format/Results';
+import { SelectData } from 'shared/components/format/Shared';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
@@ -39,6 +40,7 @@ import Utils from 'utils';
 
 // Agent Definition
 import ProductDef from 'definitions/prescriptions/product';
+ProductDef['pharmacy']['__react__']['options'] = new SelectData('prescriptions', 'pharmacies', 'pharmacyId', 'name');
 
 // Generate the agent Tree
 const ProductTree = new Tree(ProductDef);
@@ -176,7 +178,7 @@ export default function Products(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyProducts" class="page">
+		<Box id="pharmacyProducts" className="page">
 			<Box className="page_header">
 				<Typography className="title">Products to NDCs</Typography>
 				{rights.create &&

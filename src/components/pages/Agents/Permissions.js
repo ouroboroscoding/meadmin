@@ -27,6 +27,10 @@ const UPDATE = 2;
 const DELETE = 8;
 const ALL    = 15;
 const TYPES = [
+	{title: "Calendly", rights: [
+		{name: "calendly", title: "Appointments", allowed: READ},
+		{name: "calendly_admin", title: "Events", allowed: READ}
+	]},
 	{title: "Customer Service", rights: [
 		{name: "csr_agents", title: "Agents: Ability to manage agents and permissions", allowed: ALL},
 		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
@@ -36,18 +40,18 @@ const TYPES = [
 		{name: "csr_stats", title: "Stats: Allowed to view stats", allowed: READ}
 	]},
 	{title: "CRM", rights: [
-		{name: "customers", title: "CRM Data", allowed: READ}
+		{name: "customers", title: "Customers", allowed: READ | UPDATE},
+		{name: "orders", title: "Orders", allowed: CREATE | READ | UPDATE}
 	]},
 	{title: "Patient Portal", rights: [
 		{name: "patient_account", title: "Account", allowed: CREATE | READ | UPDATE}
 	]},
 	{title: "Memo", rights: [
-		{name: "calendly", title: "Calendly Appointment", allowed: READ},
 		{name: "memo_mips", title: "Memo MIP", allowed: READ | UPDATE},
 		{name: "memo_notes", title: "Memo Notes", allowed: READ | CREATE}
 	]},
 	{title: "Pharmacy", rights: [
-		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE},
+		{name: "prescriptions", title: "Prescriptions", allowed: CREATE | READ | UPDATE},
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
 		{name: "welldyne_adhoc", title: "Adhoc", allowed: CREATE | READ | DELETE},
 		{name: "welldyne_never_started", title: "Never Started", allowed: READ | UPDATE | DELETE},
