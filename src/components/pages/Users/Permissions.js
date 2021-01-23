@@ -189,14 +189,14 @@ export default class Permissions extends React.Component {
 
 	render() {
 		return TYPES.map(section =>
-			<Paper key={section.title} id="permissions">
+			<Paper key={section.title} className="permissions">
 				<Grid container spacing={2}>
-					<Grid item xs={2} className="title"><Typography>{section.title}</Typography></Grid>
-					<Grid item xs={2} className="title"><Typography>Create</Typography></Grid>
-					<Grid item xs={2} className="title"><Typography>Read</Typography></Grid>
-					<Grid item xs={2} className="title"><Typography>Update</Typography></Grid>
-					<Grid item xs={2} className="title"><Typography>Delete</Typography></Grid>
-					<Grid item xs={2} className="title"><Typography>Idents (Optional)</Typography></Grid>
+					<Grid item xs={2} className="title">{section.title}</Grid>
+					<Grid item xs={2} className="title">Create</Grid>
+					<Grid item xs={2} className="title">Read</Grid>
+					<Grid item xs={2} className="title">Update</Grid>
+					<Grid item xs={2} className="title">Delete</Grid>
+					<Grid item xs={2} className="title">Idents (Optional)</Grid>
 					{section.rights.map(perm =>
 						<Permission
 							allowed={perm.allowed}
