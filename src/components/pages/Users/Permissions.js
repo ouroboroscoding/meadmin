@@ -33,8 +33,8 @@ const TYPES = [
 		{name: "permission", title: "User Rights", allowed: READ | UPDATE}
 	]},
 	{title: "Calendly", rights: [
-		{name: "calendly", title: "Calendly", allowed: READ},
-		{name: "calendly_admin", title: "Calendly", allowed: ALL}
+		{name: "calendly", title: "Appointments", allowed: READ},
+		{name: "calendly_admin", title: "Events", allowed: ALL}
 	]},
 	{title: "CRM", rights: [
 		{name: "customers", title: "Customers", allowed: CREATE | READ | UPDATE}
