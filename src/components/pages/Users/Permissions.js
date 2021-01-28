@@ -32,22 +32,14 @@ const TYPES = [
 		{name: "user", title: "Users", allowed: CREATE | READ | UPDATE},
 		{name: "permission", title: "User Rights", allowed: READ | UPDATE}
 	]},
+	{title: "Calendly", rights: [
+		{name: "calendly", title: "Appointments", allowed: READ},
+		{name: "calendly_admin", title: "Events", allowed: ALL}
+	]},
 	{title: "CRM", rights: [
 		{name: "customers", title: "Customers", allowed: CREATE | READ | UPDATE}
 	]},
-	{title: "Patient", rights: [
-		{name: "patient_account", title: "Patient", allowed: CREATE | READ | UPDATE},
-		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE},
-		{name: "medications", title: "Medication History", allowed: READ},
-		{name: "calendly", title: "Calendly", allowed: READ}
-	]},
-	{title: "Providers", rights: [
-		{name: "providers", title: "Providers", allowed: CREATE | READ | UPDATE},
-		{name: "prov_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
-		{name: "prov_overwrite", title: "Overwrite Claims", allowed: CREATE},
-		{name: "prov_templates", title: "Templates", allowed: ALL}
-	]},
-	{title: "CSR", rights: [
+	{title: "Customer Support", rights: [
 		{name: "csr_agents", title: "Agents", allowed: ALL},
 		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
 		{name: "csr_overwrite", title: "Overwrite/Delete Claims", allowed: CREATE | READ | DELETE},
@@ -55,20 +47,30 @@ const TYPES = [
 		{name: "csr_stats", title: "Stats", allowed: READ},
 		{name: "csr_templates", title: "Templates", allowed: ALL}
 	]},
+	{title: "Patient", rights: [
+		{name: "patient_account", title: "Patient", allowed: CREATE | READ | UPDATE},
+		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE},
+		{name: "medications", title: "Medication History", allowed: READ},
+	]},
+	{title: "Providers", rights: [
+		{name: "providers", title: "Providers", allowed: CREATE | READ | UPDATE},
+		{name: "prov_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
+		{name: "prov_overwrite", title: "Overwrite Claims", allowed: CREATE},
+		{name: "prov_templates", title: "Templates", allowed: ALL}
+	]},
 	{title: "Memo", rights: [
 		{name: "memo_mips", title: "MIP", allowed: READ | UPDATE},
 		{name: "memo_notes", title: "Notes", allowed: READ | CREATE}
 	]},
 	{title: "Pharmacy", rights: [
+		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
 		{name: "rx_product", title: "Product to NDC", allowed: ALL},
+		{name: "manual_adhoc", title: "WellDyne Manual AdHoc", allowed: ALL},
 		{name: "welldyne_adhoc", title: "WellDyneRX AdHoc", allowed: CREATE | READ | DELETE},
 		{name: "welldyne_outbound", title: "WellDyneRX Outbound", allowed: READ | UPDATE}
 	]},
-	{title: "Admin", rights: [
-		{name: "calendly_admin", title: "Calendly", allowed: ALL},
-		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
-		{name: "manual_adhoc", title: "Manual AdHoc", allowed: ALL},
-		{name: "report_recipients", title: "Report Recipients", allowed: ALL}
+	{title: "Reporting", rights: [
+		{name: "report_recipients", title: "Recipients", allowed: ALL}
 	]}
 ];
 
