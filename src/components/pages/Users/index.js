@@ -29,10 +29,8 @@ import Typography from '@material-ui/core/Typography';
 import HttpsIcon from '@material-ui/icons/Https';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
-// Components
-import ResultsComponent from 'shared/components/format/Results';
-import SearchComponent from 'shared/components/format/Search';
-import FormComponent from 'shared/components/format/Form';
+// Format Components
+import { Form, Results, Search } from 'shared/components/Format';
 
 // Composites
 import Permissions from './Permissions';
@@ -161,7 +159,7 @@ export default function Users(props) {
 			</Box>
 			{create &&
 				<Paper className="padded">
-					<FormComponent
+					<Form
 						cancel={createToggle}
 						errors={{1200: "Email already in use", 1204: "Password not strong enough"}}
 						noun="user"
@@ -172,7 +170,7 @@ export default function Users(props) {
 					/>
 				</Paper>
 			}
-			<SearchComponent
+			<Search
 				hash="users"
 				name="users"
 				noun="search"
@@ -180,7 +178,7 @@ export default function Users(props) {
 				success={search}
 				tree={UserTree}
 			/>
-			<ResultsComponent
+			<Results
 				actions={[
 					{"tooltip": "Edit User's permissions", "icon": HttpsIcon, "callback": permissionsShow}
 				]}

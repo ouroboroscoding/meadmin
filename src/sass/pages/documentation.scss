@@ -1,0 +1,43 @@
+#docsServices {
+	padding: 10px;
+
+	.service {
+
+		.title {
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+
+		.actions {
+			text-align: right;
+
+			.MuiIconButton-root {
+				margin-left: 10px;
+				padding: 0;
+			}
+		}
+
+		.nouns {
+			padding: 10px 10px 10px 20px;
+
+			.header {
+				display: flex;
+
+				.title {
+					flex-grow: 1;
+					font-size: 1.25rem;
+					font-weight: bold;
+				}
+
+				button {
+					position: relative;
+					top: -15px;
+
+					.MuiSvgIcon-root {
+						font-size: 1.5rem;
+					}
+				}
+			}
+		}
+	}
+}
