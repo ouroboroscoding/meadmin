@@ -28,6 +28,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import EmailIcon from '@material-ui/icons/Email';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import EventIcon from '@material-ui/icons/Event';
@@ -74,6 +75,7 @@ export default function Header(props) {
 	let [menu, menuSet] = useState(false);
 	let [calendly, calendlySet] = useState(safeLocalStorageBool('menuCalendly'));
 	let [pharmacy, pharmacySet] = useState(safeLocalStorageBool('menuPharmacy'));
+	let [provider, providerSet] = useState(safeLocalStorageBool('menuProvider'));
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
 
 	// User effect
@@ -212,12 +214,31 @@ export default function Header(props) {
 						</React.Fragment>
 					}
 					{rights.providers &&
-						<Link to="/providers" onClick={menuToggle}>
-							<ListItem button>
+						<React.Fragment>
+							<ListItem button key="Pharmacy" onClick={ev => { providerSet(b => { localStorage.setItem('menuProvider', b ? '' : 'x'); return !b;})}}>
 								<ListItemIcon><LocalHospitalIcon /></ListItemIcon>
 								<ListItemText primary="Providers" />
+								{provider ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
-						</Link>
+							<Collapse in={provider} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									<Link to="/provider/accounts" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><PeopleIcon /></ListItemIcon>
+											<ListItemText primary="Accounts" />
+										</ListItem>
+									</Link>
+								</List>
+								<List component="div" className="submenu">
+									<Link to="/provider/hours" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><AccessTimeIcon /></ListItemIcon>
+											<ListItemText primary="Hours" />
+										</ListItem>
+									</Link>
+								</List>
+							</Collapse>
+						</React.Fragment>
 					}
 					{rights.report_recipients &&
 						<Link to="/reports" onClick={menuToggle}>

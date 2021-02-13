@@ -35,7 +35,8 @@ import Agents from './pages/Agents';
 import CalendlyEvents from './pages/Calendly/Events';
 import ClaimsAgent from './pages/ClaimsAgent';
 import PharmacyProducts from './pages/Pharmacy/Products';
-import Providers from './pages/Providers';
+import ProviderAccounts from './pages/Provider/Accounts';
+import ProviderHours from './pages/Provider/Hours';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
 
@@ -128,8 +129,14 @@ export default function Site(props) {
 								user={user}
 							/>
 						</Route>
-						<Route exact path="/providers">
-							<Providers
+						<Route exact path="/provider/accounts">
+							<ProviderAccounts
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/provider/hours">
+							<ProviderHours
 								mobile={mobile}
 								user={user}
 							/>
