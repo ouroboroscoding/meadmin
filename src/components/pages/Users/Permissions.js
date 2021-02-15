@@ -56,6 +56,7 @@ const TYPES = [
 		{name: "providers", title: "Providers", allowed: CREATE | READ | UPDATE},
 		{name: "prov_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
 		{name: "prov_overwrite", title: "Overwrite Claims", allowed: CREATE},
+		{name: "prov_stats", title: "Hours / Stats", allowed: READ},
 		{name: "prov_templates", title: "Templates", allowed: ALL}
 	]},
 	{title: "Memo", rights: [

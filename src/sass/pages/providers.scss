@@ -1,0 +1,27 @@
+#providerStats {
+	flex-basis: 0;
+	flex-shrink: 1;
+	flex-grow: 1;
+
+	padding: 10px;
+
+	.filter {
+
+		.MuiFormControl-root {
+			width: 180px;
+		}
+
+		.MuiTypography-root {
+			display: inline-block;
+			padding: 8px 5px 0;
+		}
+
+		.MuiButtonBase-root {
+			margin: 0 0 2px 15px;
+		}
+	}
+
+	.field_hours, .field_approvals, .field_declines {
+		text-align: right;
+	}
+}
