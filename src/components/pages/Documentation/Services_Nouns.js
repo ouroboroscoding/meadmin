@@ -17,7 +17,6 @@ import Tree from 'format-oc/Tree'
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
@@ -31,7 +30,6 @@ import { Form } from 'shared/components/Format';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
-import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
@@ -39,19 +37,132 @@ import { afindi, clone } from 'shared/generic/tools';
 
 // Definitions
 import NounDef from 'definitions/docs/noun';
-import NounDataDef from 'definitions/docs/noun_data';
-import NounResponseDef from 'definitions/docs/noun_response';
+import NounExtendedDef from 'definitions/docs/noun_extended';
 
 // Overwrite noun data and response
-NounDef.data = NounDataDef;
-NounDef.response = NounResponseDef;
+NounDef.data = NounExtendedDef.data;
+NounDef.response = NounExtendedDef.response;
 
 // Trees
 const NounTree = new Tree(clone(NounDef));
 
-
+/**
+ * Noun
+ *
+ * Handles displaying a single noun
+ *
+ * @name Noun
+ * @access private
+ * @param Object props Attributes sent to the component
+ * returns React.Component
+ */
 function Noun(props) {
-	return <pre>{JSON.stringify(props.value)}</pre>
+
+	// State
+	let [update, updateSet] = useState(false);
+
+	// Called to remove the noun
+	function remove() {
+
+		// Tell the server to delete the record
+		Rest.delete('docs', 'noun', {
+			_id: props.value._id
+		}).done(res => {
+
+			// If there's an error or warning
+			if(res.error && !res._handled) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If we  got data
+			if('data' in res) {
+
+				// If it was successfully deleted
+				if(res.data) {
+					Events.trigger('success', props.value.title + ' noun successfully deleted');
+					props.onRemoved(props.value._id);
+				} else {
+					Events.trigger('warning', props.value.title + ' noun failed to be deleted');
+				}
+			}
+		})
+	}
+
+	// Render
+	return (
+		<Box className="noun">
+			<Grid container spacing={2}>
+				<Grid item xs={11}>
+					<Typography className="title">{props.value.title}</Typography>
+					<Typography className="method mono">( {props.value.method} /{props.service.name}/{props.value.uri} )</Typography>
+					<Typography>{props.value.description}</Typography>
+				</Grid>
+				<Grid item xs={1} className="actions">
+					{props.rights.update &&
+						<Tooltip title="Update Noun">
+							<IconButton onClick={ev => updateSet(b => !b)}>
+								<EditIcon />
+							</IconButton>
+						</Tooltip>
+					}
+					{props.rights.delete &&
+						<Tooltip title="Delete Noun">
+							<IconButton onClick={remove}>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
+					}
+				</Grid>
+				<Grid item xs={12} md={6} className="data">
+					<Typography className="title">Request Data</Typography>
+					<Grid container spacing={1}>
+						{props.value.data.map(o =>
+							<React.Fragment>
+								<Grid item xs={12} md={3} className="mono">{o.field}</Grid>
+								<Grid item xs={12} md={3} className="mono">{o.type}</Grid>
+								<Grid item xs={12} md={6}>{o.description}</Grid>
+							</React.Fragment>
+						)}
+					</Grid>
+				</Grid>
+				<Grid item xs={12} md={6} className="response">
+					<Typography className="title">Response Data</Typography>
+					{props.value.response.map(s =>
+						<Typography className="mono">{s}</Typography>
+					)}
+				</Grid>
+				<Grid item xs={12}>
+					{update &&
+						<Form
+							cancel={ev => updateSet(b => !b)}
+							errors={{
+								1101: "Noun already exists"
+							}}
+							noun="noun"
+							service="docs"
+							success={props.onUpdated}
+							title="Update"
+							tree={NounTree}
+							type="update"
+							value={props.value}
+						/>
+					}
+				</Grid>
+			</Grid>
+		</Box>
+	);
+}
+
+// Valid props
+Noun.propTypes = {
+	onRemoved: PropTypes.func.isRequired,
+	onUpdated: PropTypes.func.isRequired,
+	rights: PropTypes.object.isRequired,
+	service: PropTypes.object.isRequired,
+	value: PropTypes.object.isRequired
 }
 
 /**
@@ -81,6 +192,14 @@ export default function Nouns(props) {
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]); // React to user changes
+
+	// Called before the noun is created to add the service ID
+	function nounBeforeSubmit(record, type) {
+		if(type === 'create') {
+			record.service = props.service._id;
+		}
+		return record;
+	}
 
 	// Called after a service is created
 	function nounCreated(noun) {
@@ -162,7 +281,7 @@ export default function Nouns(props) {
 
 	// If we haven't finished loading
 	if(nouns === null) {
-		return <Box className="docsNouns"><Typography>Loading...</Typography></Box>
+		return <Box className="nouns"><Typography>Loading...</Typography></Box>
 	}
 
 	// Render
@@ -180,6 +299,7 @@ export default function Nouns(props) {
 			</Box>
 			{create &&
 				<Form
+					beforeSubmit={nounBeforeSubmit}
 					cancel={ev => createSet(b => !b)}
 					errors={{
 						1101: "Noun already exists"
@@ -202,6 +322,7 @@ export default function Nouns(props) {
 							onRemoved={nounRemoved}
 							onUpdated={nounUpdated}
 							rights={props.rights}
+							service={props.service}
 							value={o}
 						/>
 					)}

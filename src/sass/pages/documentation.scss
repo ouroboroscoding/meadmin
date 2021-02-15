@@ -4,7 +4,7 @@
 	.service {
 
 		.title {
-			font-size: 1.5rem;
+			font-size: 1.75rem;
 			font-weight: bold;
 		}
 
@@ -25,7 +25,7 @@
 
 				.title {
 					flex-grow: 1;
-					font-size: 1.25rem;
+					font-size: 1.50rem;
 					font-weight: bold;
 				}
 
@@ -38,6 +38,34 @@
 					}
 				}
 			}
+
+			.mono {
+				font-family: courier, sans-serif;
+			}
+
+			.noun {
+
+				.title {
+					display: inline-block;
+					font-size: 1.25rem;
+					margin-right: 10px;
+				}
+
+				.method {
+					display: inline-block;
+				}
+
+				.data, .response {
+					.title {
+						display: block;
+						margin-bottom: 5px;
+					}
+				}
+			}
 		}
 	}
+}
+
+#docsErrors {
+	padding: 10px;
 }

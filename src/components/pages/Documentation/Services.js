@@ -110,7 +110,7 @@ function Service(props) {
 				</Grid>
 				<Grid item xs={1} className="actions">
 					{props.rights.update &&
-						<Tooltip title="Add Service">
+						<Tooltip title="Edit Service">
 							<IconButton onClick={ev => updateSet(b => !b)}>
 								<EditIcon />
 							</IconButton>
