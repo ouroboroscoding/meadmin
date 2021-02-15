@@ -230,10 +230,10 @@ export default function Header(props) {
 									</Link>
 								</List>
 								<List component="div" className="submenu">
-									<Link to="/provider/hours" onClick={menuToggle}>
+									<Link to="/provider/stats" onClick={menuToggle}>
 										<ListItem button>
 											<ListItemIcon><AccessTimeIcon /></ListItemIcon>
-											<ListItemText primary="Hours" />
+											<ListItemText primary="Stats" />
 										</ListItem>
 									</Link>
 								</List>

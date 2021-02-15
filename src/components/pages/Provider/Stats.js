@@ -1,5 +1,5 @@
 /**
- * Provider Hours
+ * Provider Stats
  *
  * Page to add/edit providers to the tool
  *
@@ -12,10 +12,15 @@
 import PropTypes from 'prop-types';
 import React, { useRef, useState, useEffect } from 'react';
 import Parent from 'format-oc/Parent';
+import Tree from 'format-oc/Tree';
 
 // Material UI
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -30,10 +35,22 @@ import Rest from 'shared/communication/rest';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { date, dateInc } from 'shared/generic/tools';
+import { afindo, clone, date, dateInc, datetime } from 'shared/generic/tools';
+
+// Definitions
+import TrackingDef from 'definitions/providers/tracking';
+
+const ProviderTracking = clone(TrackingDef);
+ProviderTracking.__react__ = {
+	results: ['action', 'action_ts', 'resolution', 'resolution_ts', 'time', 'crm_id']
+};
+ProviderTracking.action_ts = {__type__: 'string', __react__: {title: 'Start'}}
+ProviderTracking.resolution_ts = {__type__: 'string', __react__: {title: 'End'}}
+ProviderTracking.time = {__type__: 'string', __react__: {title: 'Elapsed'}};
+ProviderTracking.crm_id.__react__ = {title: 'Customer ID'};
 
 // Generate the tree for the results component
-const HoursParent = new Parent({
+const StatsParent = new Parent({
 	__react__: {
 		primary: 'memoId',
 		results: ['firstName', 'lastName', 'hours', 'approvals', 'declines']
@@ -41,22 +58,25 @@ const HoursParent = new Parent({
 	memoId: {__type__: 'uint'},
 	firstName: {__type__: 'string', __react__: {title: 'First'}},
 	lastName: {__type__: 'string', __react__: {title: 'Last'}},
-	hours: {__type__: 'string', __react__: {title: 'Total Hours'}},
+	hours: {__type__: 'string'},
 	approvals: {__type__: 'uint'},
 	declines: {__type__: 'uint'}
-})
+});
+
+const TrackingTree = new Tree(ProviderTracking)
 
 /**
- * Hours
+ * Stats
  *
  * Returns breakdown of provider worked hours
  *
- * @name Hours
+ * @name Stats
  * @extends React.Component
  */
-export default function Hours(props) {
+export default function Stats(props) {
 
 	// State
+	let [dialog, dialogSet] = useState(false);
 	let [range, rangeSet] = useState(null);
 	let [results, resultsSet] = useState(false)
 
@@ -75,8 +95,49 @@ export default function Hours(props) {
 	}, [range]);
 
 	// Show individual provider breakdown
-	function breakdownShow(provider) {
-		console.log(provider);
+	function breakdownShow(id) {
+
+		// Find the record associated with the ID
+		let oStat = afindo(results, 'memoId', id);
+
+		// Init the new dialog value
+		let oDialog = {
+			name: oStat.firstName + ' ' + oStat.lastName,
+			results: 0
+		};
+
+		// Display the dialog
+		dialogSet(oDialog);
+
+		// Make the request to the server for the results
+		Rest.read('providers', 'provider/tracking', {
+			memo_id: id,
+			start: range[0],
+			end: range[1]
+		}).done(res => {
+
+			// If there's an error or warning
+			if(res.error && !res._handled) {
+				Events.trigger('error', JSON.stringify(res.error));
+			}
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If we have data
+			if(res.data) {
+
+				// Go through each record and convert the timestamps to dates
+				for(let o of res.data) {
+					o.action_ts = datetime(o.action_ts, '-');
+					o.resolution_ts = datetime(o.resolution_ts, '-');
+				}
+
+				let oNewDialog = clone(oDialog);
+				oNewDialog.results = res.data;
+				dialogSet(oNewDialog);
+			}
+		});
 	}
 
 	// Converts the start and end dates into timestamps
@@ -119,9 +180,9 @@ export default function Hours(props) {
 
 	// Render
 	return (
-		<Box id="providerHours">
+		<Box id="providerStats">
 			<Box className="page_header">
-				<Typography className="title">Provider Hours</Typography>
+				<Typography className="title">Provider Stats</Typography>
 			</Box>
 			<Box className="filter">
 				<TextField
@@ -171,18 +232,43 @@ export default function Hours(props) {
 							orderBy="lastName"
 							remove={false}
 							service=""
-							tree={HoursParent}
+							tree={StatsParent}
 							update={false}
 						/>
 					}
 				</Box>
+			}
+			{dialog &&
+				<Dialog
+					aria-labelledby="tracking-dialog-title"
+					maxWidth="lg"
+					onClose={ev => dialogSet(false)}
+					open={true}
+				>
+					<DialogTitle id="tracking-dialog-title">{dialog.name}</DialogTitle>
+					<DialogContent dividers>
+						{dialog.results === 0 ?
+							<Typography>Loading...</Typography>
+						:
+							<ResultsComponent
+								data={dialog.results}
+								noun=""
+								orderBy="action_ts"
+								remove={false}
+								service=""
+								tree={TrackingTree}
+								update={false}
+							/>
+						}
+					</DialogContent>
+				</Dialog>
 			}
 		</Box>
 	);
 }
 
 // Valid props
-Hours.propTypes = {
+Stats.propTypes = {
 	mobile: PropTypes.bool.isRequired,
 	user: PropTypes.object.isRequired
 }

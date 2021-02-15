@@ -36,7 +36,7 @@ import CalendlyEvents from './pages/Calendly/Events';
 import ClaimsAgent from './pages/ClaimsAgent';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import ProviderAccounts from './pages/Provider/Accounts';
-import ProviderHours from './pages/Provider/Hours';
+import ProviderStats from './pages/Provider/Stats';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
 
@@ -135,8 +135,8 @@ export default function Site(props) {
 								user={user}
 							/>
 						</Route>
-						<Route exact path="/provider/hours">
-							<ProviderHours
+						<Route exact path="/provider/stats">
+							<ProviderStats
 								mobile={mobile}
 								user={user}
 							/>
