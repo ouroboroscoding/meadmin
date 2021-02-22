@@ -45,7 +45,8 @@ const TYPES = [
 		{name: "csr_overwrite", title: "Overwrite/Delete Claims", allowed: CREATE | READ | DELETE},
 		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
 		{name: "csr_stats", title: "Stats", allowed: READ},
-		{name: "csr_templates", title: "Templates", allowed: ALL}
+		{name: "csr_templates", title: "Templates", allowed: ALL},
+		{name: "justcall", title: "JustCall", allowed: READ}
 	]},
 	{title: "Patient", rights: [
 		{name: "patient_account", title: "Patient", allowed: CREATE | READ | UPDATE},
