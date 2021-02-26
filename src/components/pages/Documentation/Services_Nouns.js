@@ -92,6 +92,12 @@ function Noun(props) {
 		})
 	}
 
+	// Called when the data is updated
+	function updated() {
+		updateSet(false);
+		props.onUpdated()
+	}
+
 	// Render
 	return (
 		<Paper className="noun">
@@ -144,7 +150,7 @@ function Noun(props) {
 							}}
 							noun="noun"
 							service="docs"
-							success={props.onUpdated}
+							success={updated}
 							title="Update"
 							tree={NounTree}
 							type="update"
