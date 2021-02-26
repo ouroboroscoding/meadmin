@@ -17,6 +17,7 @@ import Tree from 'format-oc/Tree'
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
@@ -93,11 +94,11 @@ function Noun(props) {
 
 	// Render
 	return (
-		<Box className="noun">
+		<Paper className="noun">
 			<Grid container spacing={2}>
 				<Grid item xs={11}>
 					<Typography className="title">{props.value.title}</Typography>
-					<Typography className="method mono">( {props.value.method} /{props.service.name}/{props.value.uri} )</Typography>
+					<Typography className="method mono">{props.value.method} /{props.service.name}/{props.value.uri}</Typography>
 					<Typography>{props.value.description}</Typography>
 				</Grid>
 				<Grid item xs={1} className="actions">
@@ -152,7 +153,7 @@ function Noun(props) {
 					}
 				</Grid>
 			</Grid>
-		</Box>
+		</Paper>
 	);
 }
 
