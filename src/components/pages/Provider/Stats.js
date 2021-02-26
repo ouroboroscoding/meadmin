@@ -52,14 +52,15 @@ ProviderTracking.crm_id.__react__ = {title: 'Customer ID'};
 const StatsParent = new Parent({
 	__react__: {
 		primary: 'memoId',
-		results: ['firstName', 'lastName', 'hours', 'approvals', 'declines']
+		results: ['firstName', 'lastName', 'hours', 'approvals', 'declines', 'average']
 	},
 	memoId: {__type__: 'uint'},
 	firstName: {__type__: 'string', __react__: {title: 'First'}},
 	lastName: {__type__: 'string', __react__: {title: 'Last'}},
 	hours: {__type__: 'string'},
 	approvals: {__type__: 'uint'},
-	declines: {__type__: 'uint'}
+	declines: {__type__: 'uint'},
+	average: {__type__: 'string'}
 });
 
 const TrackingTree = new Tree(ProviderTracking)
