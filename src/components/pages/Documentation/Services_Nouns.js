@@ -317,6 +317,9 @@ export default function Nouns(props) {
 					title="Add New"
 					tree={NounTree}
 					type="create"
+					value={{
+						"session": false
+					}}
 				/>
 			}
 			{nouns.length === 0 ?
