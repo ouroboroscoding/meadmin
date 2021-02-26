@@ -93,9 +93,9 @@ function Noun(props) {
 	}
 
 	// Called when the data is updated
-	function updated() {
+	function updated(noun) {
 		updateSet(false);
-		props.onUpdated()
+		props.onUpdated(noun);
 	}
 
 	// Render
@@ -279,7 +279,7 @@ export default function Nouns(props) {
 			let lNouns = clone(nouns);
 
 			// Update the index
-			lNouns[iIndex] = noun;
+			lNouns[iIndex] = {...lNouns[iIndex], ...noun};
 
 			// Set the new state
 			nounsSet(lNouns);
