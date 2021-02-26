@@ -29,11 +29,14 @@ import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import DescriptionIcon from '@material-ui/icons/Description';
 import EmailIcon from '@material-ui/icons/Email';
+import ErrorIcon from '@material-ui/icons/Error';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import EventIcon from '@material-ui/icons/Event';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import GroupIcon from '@material-ui/icons/Group';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import LocalPharmacyIcon from '@material-ui/icons/LocalPharmacy';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -48,6 +51,7 @@ import Loader from './Loader';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
+import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
@@ -61,6 +65,7 @@ const _NO_RIGHTS = {
 	calendly_admin: false,
 	csr_agents: false,
 	csr_overwrite: false,
+	documentation: false,
 	providers: false,
 	report_recipients: false,
 	rx_product: false,
@@ -74,6 +79,7 @@ export default function Header(props) {
 	let [account, accountSet] = useState(false);
 	let [menu, menuSet] = useState(false);
 	let [calendly, calendlySet] = useState(safeLocalStorageBool('menuCalendly'));
+	let [documentation, documentationSet] = useState(safeLocalStorageBool('menuDocumentation'));
 	let [pharmacy, pharmacySet] = useState(safeLocalStorageBool('menuPharmacy'));
 	let [provider, providerSet] = useState(safeLocalStorageBool('menuProvider'));
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
@@ -81,13 +87,14 @@ export default function Header(props) {
 	// User effect
 	useEffect(() => {
 		rightsSet(props.user ? {
-			calendly_admin: Utils.hasRight(props.user, 'calendly_admin', 'read'),
-			csr_agents: Utils.hasRight(props.user, 'csr_agents', 'read'),
-			csr_overwrite: Utils.hasRight(props.user, 'csr_overwrite', 'read'),
-			providers: Utils.hasRight(props.user, 'providers', 'read'),
-			report_recipients: Utils.hasRight(props.user, 'report_recipients', 'read'),
-			rx_product: Utils.hasRight(props.user, 'rx_product', 'read'),
-			user: Utils.hasRight(props.user, 'user', 'read')
+			calendly_admin: Rights.has('calendly_admin', 'read'),
+			csr_agents: Rights.has('csr_agents', 'read'),
+			csr_overwrite: Rights.has('csr_overwrite', 'read'),
+			documentation: Rights.has('documentation', 'update'),
+			providers: Rights.has('providers', 'read'),
+			report_recipients: Rights.has('report_recipients', 'read'),
+			rx_product: Rights.has('rx_product', 'read'),
+			user: Rights.has('user', 'read')
 		} : _NO_RIGHTS);
 	}, [props.user])
 
@@ -247,6 +254,31 @@ export default function Header(props) {
 								<ListItemText primary="Report Recipients" />
 							</ListItem>
 						</Link>
+					}
+					{rights.documentation &&
+						<React.Fragment>
+							<ListItem button key="REST Docs" onClick={ev => { documentationSet(b => { localStorage.setItem('menuDocumentation', b ? '' : 'x'); return !b;})}}>
+								<ListItemIcon><DescriptionIcon /></ListItemIcon>
+								<ListItemText primary="REST Docs" />
+								{documentation ? <ExpandLess /> : <ExpandMore />}
+							</ListItem>
+							<Collapse in={documentation} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									<Link to="/documentation/services" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><InsertDriveFileIcon /></ListItemIcon>
+											<ListItemText primary="Services" />
+										</ListItem>
+									</Link>
+									<Link to="/documentation/errors" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><ErrorIcon /></ListItemIcon>
+											<ListItemText primary="Errors" />
+										</ListItem>
+									</Link>
+								</List>
+							</Collapse>
+						</React.Fragment>
 					}
 					{rights.user &&
 						<Link to="/users" onClick={menuToggle}>

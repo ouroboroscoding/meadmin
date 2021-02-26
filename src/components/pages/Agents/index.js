@@ -36,18 +36,15 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import Permissions from './Permissions';
 
 // Format Components
-import ResultsComponent from 'shared/components/format/Results';
-import FormComponent from 'shared/components/format/Form';
+import { Form, Results } from 'shared/components/Format';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
+import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
 import { afindi, clone } from 'shared/generic/tools';
-
-// Local modules
-import Utils from 'utils';
 
 // Agent Definition
 import AgentDef from 'definitions/csr/agent_memo';
@@ -261,7 +258,7 @@ export default function Agents(props) {
 		<Box id="agents" className="page">
 			<Box className="page_header">
 				<Typography className="title">Agents</Typography>
-				{Utils.hasRight(props.user, 'csr_agents', 'create') &&
+				{Rights.has('csr_agents', 'create') &&
 					<React.Fragment>
 						<Tooltip title="Import Memo User">
 							<IconButton onClick={ev => memoSet(b => !b)}>
@@ -278,7 +275,7 @@ export default function Agents(props) {
 			</Box>
 			{create &&
 				<Paper className="padded">
-					<FormComponent
+					<Form
 						cancel={ev => createSet(b => !b)}
 						errors={{
 							1501: "Username already in use",
@@ -297,7 +294,7 @@ export default function Agents(props) {
 			{agents === null ?
 				<Box>Loading...</Box>
 			:
-				<ResultsComponent
+				<Results
 					actions={[
 						{"tooltip": "Edit Agent's permissions", "icon": HttpsIcon, "callback": permissionsShow},
 						{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent_id => passwordSet(agent_id)}
@@ -308,10 +305,10 @@ export default function Agents(props) {
 					}}
 					noun="agent"
 					orderBy="userName"
-					remove={Utils.hasRight(props.user, 'csr_agents', 'delete') ? removeAgent : false}
+					remove={Rights.has('csr_agents', 'delete') ? removeAgent : false}
 					service="csr"
 					tree={AgentTree}
-					update={Utils.hasRight(props.user, 'csr_agents', 'update')}
+					update={Rights.has('csr_agents', 'update')}
 				/>
 			}
 			{permissions &&

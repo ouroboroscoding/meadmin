@@ -24,19 +24,16 @@ import Typography from '@material-ui/core/Typography';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 // Format Components
-import FormComponent from 'shared/components/format/Form';
-import ResultsComponent from 'shared/components/format/Results';
-import { SelectData } from 'shared/components/format/Shared';
+import { Form, Results } from 'shared/components/Format';
+import { SelectData } from 'shared/components/Format/Shared';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
+import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
 import { afindi, clone, omap } from 'shared/generic/tools';
-
-// Local modules
-import Utils from 'utils';
 
 // Agent Definition
 import CalendlyEventDef from 'definitions/monolith/calendly_event';
@@ -85,9 +82,9 @@ export default function CalendlyEvents(props) {
 		if(props.user) {
 			eventsFetch();
 			rightsSet({
-				create: Utils.hasRight(props.user, 'calendly_admin', 'create'),
-				delete: Utils.hasRight(props.user, 'calendly_admin', 'delete'),
-				update: Utils.hasRight(props.user, 'calendly_admin', 'update')
+				create: Rights.has('calendly_admin', 'create'),
+				delete: Rights.has('calendly_admin', 'delete'),
+				update: Rights.has('calendly_admin', 'update')
 			})
 		} else {
 			eventsSet(null);
@@ -198,7 +195,7 @@ export default function CalendlyEvents(props) {
 			</Box>
 			{create &&
 				<Paper className="padded">
-					<FormComponent
+					<Form
 						cancel={ev => createSet(false)}
 						noun="calendly/event"
 						service="monolith"
@@ -211,7 +208,7 @@ export default function CalendlyEvents(props) {
 			{events === null ?
 				<Box>Loading...</Box>
 			:
-				<ResultsComponent
+				<Results
 					data={events}
 					noun="calendly/event"
 					orderBy="key"

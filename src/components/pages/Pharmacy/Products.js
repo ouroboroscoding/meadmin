@@ -24,12 +24,12 @@ import Typography from '@material-ui/core/Typography';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 // Format Components
-import FormComponent from 'shared/components/format/Form';
-import ResultsComponent from 'shared/components/format/Results';
-import { SelectData } from 'shared/components/format/Shared';
+import { Form, Results } from 'shared/components/Format';
+import { SelectData } from 'shared/components/Format/Shared';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
+import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
@@ -77,9 +77,9 @@ export default function Products(props) {
 		if(props.user) {
 			productsFetch();
 			rightsSet({
-				create: Utils.hasRight(props.user, 'rx_product', 'create'),
-				delete: Utils.hasRight(props.user, 'rx_product', 'delete'),
-				update: Utils.hasRight(props.user, 'rx_product', 'update'),
+				create: Rights.has('rx_product', 'create'),
+				delete: Rights.has('rx_product', 'delete'),
+				update: Rights.has('rx_product', 'update'),
 				pharmacy: Utils.getIdents(props.user, 'rx_product')
 			})
 		} else {
@@ -191,7 +191,7 @@ export default function Products(props) {
 			</Box>
 			{create &&
 				<Paper className="padded">
-					<FormComponent
+					<Form
 						cancel={ev => createSet(false)}
 						noun="product"
 						service="prescriptions"
@@ -207,7 +207,7 @@ export default function Products(props) {
 			{products === null ?
 				<Box>Loading...</Box>
 			:
-				<ResultsComponent
+				<Results
 					data={products}
 					noun="product"
 					orderBy="key"
