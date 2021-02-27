@@ -18,17 +18,15 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 // Format Components
-import ResultsComponent from 'shared/components/format/Results';
+import { Results } from 'shared/components/Format';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
+import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
 import { afindi, clone } from 'shared/generic/tools';
-
-// Local modules
-import Utils from 'utils';
 
 // Agent Definition
 import ClaimDef from 'definitions/monolith/customer_claimed';
@@ -117,11 +115,11 @@ export default function ClaimsAgent(props) {
 			{claims === null ?
 				<Box>Loading...</Box>
 			:
-				<ResultsComponent
+				<Results
 					data={claims}
 					noun="agent/claim"
 					orderBy="createdAt"
-					remove={Utils.hasRight(props.user, 'csr_overwrite', 'delete') ? removeClaim : false}
+					remove={Rights.has('csr_overwrite', 'delete') ? removeClaim : false}
 					service="monolith"
 					tree={ClaimTree}
 					update={false}

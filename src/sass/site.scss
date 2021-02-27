@@ -13,6 +13,7 @@ $menu-width: 250px;
 @import 'signin';
 
 /* pages */
+@import 'pages/documentation';
 @import 'pages/permissions';
 @import 'pages/providers';
 @import 'pages/reports';
@@ -43,21 +44,6 @@ code {
 
 p {
 	margin-bottom: 10px;
-}
-
-span.title {
-	display: inline-block;
-	font-weight: bold;
-	font-size: 110%;
-	margin: 10px 10px 10px 0;
-	vertical-align: middle;
-}
-
-div.subtitle {
-	display: block;
-	font-size: 1.5rem;
-	font-weight: 400;
-	margin: 0 0 8px 0;
 }
 
 td {

@@ -1,0 +1,73 @@
+#docsServices {
+	padding: 10px;
+
+	.service {
+
+		.title {
+			font-size: 1.75rem;
+			font-weight: bold;
+		}
+
+		.actions {
+			text-align: right;
+
+			.MuiIconButton-root {
+				margin-left: 10px;
+				padding: 0;
+			}
+		}
+
+		.nouns {
+			padding: 10px 10px 10px 20px;
+
+			.header {
+				display: flex;
+
+				.title {
+					flex-grow: 1;
+					font-size: 1.50rem;
+					font-weight: bold;
+				}
+
+				button {
+					position: relative;
+					top: -15px;
+
+					.MuiSvgIcon-root {
+						font-size: 1.5rem;
+					}
+				}
+			}
+
+			.mono {
+				font-family: courier, sans-serif;
+			}
+
+			.noun {
+				margin-bottom: 10px;
+				padding: 10px;
+
+				.title {
+					display: inline-block;
+					font-size: 1.25rem;
+					margin-right: 10px;
+				}
+
+				.method {
+					display: inline-block;
+				}
+
+				.data, .response {
+					.title {
+						display: block;
+						margin-bottom: 5px;
+					}
+				}
+			}
+		}
+	}
+}
+
+#docsErrors {
+	padding: 10px;
+}

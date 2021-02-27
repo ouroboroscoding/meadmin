@@ -27,7 +27,7 @@ import Typography from '@material-ui/core/Typography';
 import ListIcon from '@material-ui/icons/List';
 
 // Format Components
-import ResultsComponent from 'shared/components/format/Results';
+import { Results } from 'shared/components/Format';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
@@ -223,7 +223,7 @@ export default function Stats(props) {
 					{results.length === 0 ?
 						<Typography>No results</Typography>
 					:
-						<ResultsComponent
+						<Results
 							actions={[
 								{"tooltip": "View Breakdown", "icon": ListIcon, "callback": breakdownShow}
 							]}
@@ -250,7 +250,7 @@ export default function Stats(props) {
 						{dialog.results === 0 ?
 							<Typography>Loading...</Typography>
 						:
-							<ResultsComponent
+							<Results
 								data={dialog.results}
 								noun=""
 								orderBy="action_ts"

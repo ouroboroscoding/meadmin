@@ -36,19 +36,16 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import Permissions from './Permissions';
 
 // Format Components
-import ResultsComponent from 'shared/components/format/Results';
-import FormComponent from 'shared/components/format/Form';
-import { SelectData } from 'shared/components/format/Shared';
+import { Form, Results } from 'shared/components/Format';
+import { SelectData } from 'shared/components/Format/Shared';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
+import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
 import { afindi, clone, omap } from 'shared/generic/tools';
-
-// Local modules
-import Utils from 'utils';
 
 // Provider Definition
 import ProviderDef from 'definitions/providers/provider_memo';
@@ -275,7 +272,7 @@ export default function Providers(props) {
 		<Box id="providers" className="page">
 			<Box className="page_header">
 				<Typography className="title">Providers</Typography>
-				{Utils.hasRight(props.user, 'providers', 'create') &&
+				{Rights.has('providers', 'create') &&
 					<React.Fragment>
 						<Tooltip title="Import Memo User">
 							<IconButton onClick={ev => memoSet(b => !b)}>
@@ -292,7 +289,7 @@ export default function Providers(props) {
 			</Box>
 			{create &&
 				<Paper className="padded">
-					<FormComponent
+					<Form
 						cancel={ev => createSet(b => !b)}
 						errors={{
 							1501: "Username already in use",
@@ -311,7 +308,7 @@ export default function Providers(props) {
 			{providers === null ?
 				<Box>Loading...</Box>
 			:
-				<ResultsComponent
+				<Results
 					actions={[
 						{"tooltip": "Edit Provider's permissions", "icon": HttpsIcon, "callback": permissionsShow},
 						{"tooltip": "Change Provider's password", "icon": VpnKeyIcon, "callback": provider_id => passwordSet(provider_id)}
@@ -322,10 +319,10 @@ export default function Providers(props) {
 					}}
 					noun="provider"
 					orderBy="userName"
-					remove={Utils.hasRight(props.user, 'providers', 'delete') ? removeProvider : false}
+					remove={Rights.has('providers', 'delete') ? removeProvider : false}
 					service="providers"
 					tree={ProviderTree}
-					update={Utils.hasRight(props.user, 'providers', 'update')}
+					update={Rights.has('providers', 'update')}
 				/>
 			}
 			{permissions &&

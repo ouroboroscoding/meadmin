@@ -34,6 +34,8 @@ import SignIn from './SignIn';
 import Agents from './pages/Agents';
 import CalendlyEvents from './pages/Calendly/Events';
 import ClaimsAgent from './pages/ClaimsAgent';
+import DocsServices from './pages/Documentation/Services';
+import DocsErrors from './pages/Documentation/Errors';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import ProviderAccounts from './pages/Provider/Accounts';
 import ProviderStats from './pages/Provider/Stats';
@@ -119,6 +121,18 @@ export default function Site(props) {
 						</Route>
 						<Route exact path="/claims/agent">
 							<ClaimsAgent
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/documentation/services">
+							<DocsServices
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/documentation/errors">
+							<DocsErrors
 								mobile={mobile}
 								user={user}
 							/>
