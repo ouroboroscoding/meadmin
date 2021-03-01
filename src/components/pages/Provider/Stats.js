@@ -20,6 +20,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -34,7 +35,7 @@ import Rest from 'shared/communication/rest';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { afindo, clone, date, dateInc, datetime } from 'shared/generic/tools';
+import { afindo, clone, date, dateInc, datetime, safeLocalStorage } from 'shared/generic/tools';
 
 // Definitions
 import TrackingDef from 'definitions/providers/tracking';
@@ -77,6 +78,8 @@ export default function Stats(props) {
 
 	// State
 	let [dialog, dialogSet] = useState(false);
+	let [filter, filterSet] = useState(safeLocalStorage('providerStatsFilter', 'all'));
+	let [filtered, filteredSet] = useState([]);
 	let [range, rangeSet] = useState(null);
 	let [results, resultsSet] = useState(false)
 
@@ -84,7 +87,7 @@ export default function Stats(props) {
 	let refStart = useRef();
 	let refEnd = useRef();
 
-	// Filter change
+	// Date range change
 	useEffect(() => {
 		if(range) {
 			resultsFetch()
@@ -93,6 +96,20 @@ export default function Stats(props) {
 		}
 	// eslint-disable-next-line
 	}, [range]);
+
+	// Breakdown or filter change
+	useEffect(() => {
+		if(dialog && dialog.results) {
+			if(filter === 'all') {
+				filteredSet(dialog.results);
+			} else {
+				filterDialogResults(filter);
+			}
+		} else {
+			filteredSet([]);
+		}
+	// eslint-disable-next-line
+	}, [dialog, filter])
 
 	// Show individual provider breakdown
 	function breakdownShow(id) {
@@ -129,8 +146,8 @@ export default function Stats(props) {
 
 				// Go through each record and convert the timestamps to dates
 				for(let o of res.data) {
-					o.action_ts = datetime(o.action_ts, '-');
-					o.resolution_ts = datetime(o.resolution_ts, '-');
+					o.action_ts = o.action_ts ? datetime(o.action_ts, '-') : '';
+					o.resolution_ts = o.resolution_ts ? datetime(o.resolution_ts, '-') : '';
 				}
 
 				let oNewDialog = clone(oDialog);
@@ -138,6 +155,17 @@ export default function Stats(props) {
 				dialogSet(oNewDialog);
 			}
 		});
+	}
+
+	// Called when either the dialog results or filter is changed
+	function filterDialogResults(filter) {
+		let lResults = [];
+		for(let o of dialog.results) {
+			if(o.action === filter) {
+				lResults.push(o);
+			}
+		}
+		filteredSet(lResults);
 	}
 
 	// Converts the start and end dates into timestamps
@@ -250,15 +278,28 @@ export default function Stats(props) {
 						{dialog.results === 0 ?
 							<Typography>Loading...</Typography>
 						:
-							<Results
-								data={dialog.results}
-								noun=""
-								orderBy="action_ts"
-								remove={false}
-								service=""
-								tree={TrackingTree}
-								update={false}
-							/>
+							<React.Fragment>
+								<Select
+									native
+									onChange={ev => filterSet(ev.currentTarget.value)}
+									value={filter}
+									variant="outlined"
+								>
+									<option value="all">All</option>
+									<option value="signin">Signin</option>
+									<option value="sms">SMS</option>
+									<option value="viewed">Viewed</option>
+								</Select>
+								<Results
+									data={filtered}
+									noun=""
+									orderBy="action_ts"
+									remove={false}
+									service=""
+									tree={TrackingTree}
+									update={false}
+								/>
+							</React.Fragment>
 						}
 					</DialogContent>
 				</Dialog>
