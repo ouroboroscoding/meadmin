@@ -46,7 +46,8 @@ const TYPES = [
 		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
 		{name: "csr_stats", title: "Stats", allowed: READ},
 		{name: "csr_templates", title: "Templates", allowed: ALL},
-		{name: "justcall", title: "JustCall", allowed: READ}
+		{name: "justcall", title: "JustCall", allowed: READ},
+		{name: "hubspot", title: "HubSpot", allowed: READ}
 	]},
 	{title: "Developers", rights: [
 		{name: "documentation", title: "Documentation", allowed: CREATE | UPDATE | DELETE}
