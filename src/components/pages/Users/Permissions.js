@@ -52,6 +52,9 @@ const TYPES = [
 	{title: "Developers", rights: [
 		{name: "documentation", title: "Documentation", allowed: CREATE | UPDATE | DELETE}
 	]},
+	{title: "General", rights: [
+		{name: "link", title: "Link Shortening", allowed: CREATE | DELETE | READ}
+	]},
 	{title: "Patient", rights: [
 		{name: "patient_account", title: "Patient", allowed: CREATE | READ | UPDATE},
 		{name: "prescriptions", title: "Prescriptions", allowed: READ | UPDATE},
