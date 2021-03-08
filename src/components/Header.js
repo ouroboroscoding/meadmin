@@ -37,6 +37,7 @@ import EventIcon from '@material-ui/icons/Event';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import GroupIcon from '@material-ui/icons/Group';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import LinkIcon from '@material-ui/icons/Link';
 import LocalPharmacyIcon from '@material-ui/icons/LocalPharmacy';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -66,6 +67,7 @@ const _NO_RIGHTS = {
 	csr_agents: false,
 	csr_overwrite: false,
 	documentation: false,
+	link: false,
 	providers: false,
 	report_recipients: false,
 	rx_product: false,
@@ -91,6 +93,7 @@ export default function Header(props) {
 			csr_agents: Rights.has('csr_agents', 'read'),
 			csr_overwrite: Rights.has('csr_overwrite', 'read'),
 			documentation: Rights.has('documentation', 'update'),
+			link: Rights.has('link', 'read'),
 			providers: Rights.has('providers', 'read'),
 			report_recipients: Rights.has('report_recipients', 'read'),
 			rx_product: Rights.has('rx_product', 'read'),
@@ -200,6 +203,14 @@ export default function Header(props) {
 								</List>
 							</Collapse>
 						</React.Fragment>
+					}
+					{rights.link &&
+						<Link to="/links" onClick={menuToggle}>
+							<ListItem button>
+								<ListItemIcon><LinkIcon /></ListItemIcon>
+								<ListItemText primary="Links" />
+							</ListItem>
+						</Link>
 					}
 					{rights.rx_product &&
 						<React.Fragment>
