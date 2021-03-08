@@ -188,6 +188,10 @@ export default function Links(props) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]); // React to user changes
 
+	function codeProcess(link) {
+		return 'https://' + process.env.REACT_APP_LINK_DOMAIN + '/' + link.code;
+	}
+
 	// Called after a link is created
 	function linkCreated(link) {
 
@@ -311,6 +315,9 @@ export default function Links(props) {
 					actions={[
 						{"tooltip": "Views", "icon": ListIcon, "callback": viewsShow}
 					]}
+					custom={{
+						code: codeProcess
+					}}
 					data={links}
 					noun="url"
 					orderBy="url"
