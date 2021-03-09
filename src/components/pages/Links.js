@@ -16,9 +16,11 @@ import Tree from 'format-oc/Tree'
 // Material UI
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
@@ -68,15 +70,17 @@ const _NO_RIGHTS = {
 function Create(props) {
 
 	// URL
-	let [url, urlSet] = useState('');
 	let [error, errorSet] = useState(false);
+	let [permanent, permanentSet] = useState(false);
+	let [url, urlSet] = useState('');
 
 	// Create the new link
 	function create() {
 
 		// Send the data to the service via rest
 		Rest.create('link', 'url', {
-			url: url
+			url: url,
+			permanent: permanent
 		}).done(res => {
 
 			// If there's an error or warning
@@ -133,6 +137,14 @@ function Create(props) {
 					InputLabelProps={{
 						shrink: true,
 					}}
+				/>
+				<FormControlLabel
+					control={<Checkbox
+								color="primary"
+								checked={permanent ? true : false}
+								onChange={ev => permanentSet(ev.currentTarget.checked)}
+						/>}
+					label="Make Permanent (permanent URLs aren't deleted after 30 days of inactivity)"
 				/>
 			</Box>
 			<Box className="actions">
