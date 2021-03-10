@@ -56,7 +56,7 @@ import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { safeLocalStorageBool } from 'shared/generic/tools';
+import { clone, safeLocalStorageJSON } from 'shared/generic/tools';
 
 // Local modules
 import Utils from 'utils';
@@ -80,11 +80,8 @@ export default function Header(props) {
 	// State
 	let [account, accountSet] = useState(false);
 	let [menu, menuSet] = useState(false);
-	let [calendly, calendlySet] = useState(safeLocalStorageBool('menuCalendly'));
-	let [documentation, documentationSet] = useState(safeLocalStorageBool('menuDocumentation'));
-	let [pharmacy, pharmacySet] = useState(safeLocalStorageBool('menuPharmacy'));
-	let [provider, providerSet] = useState(safeLocalStorageBool('menuProvider'));
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
+	let [subs, subsSet] = useState(safeLocalStorageJSON('submenu', {}))
 
 	// User effect
 	useEffect(() => {
@@ -95,6 +92,7 @@ export default function Header(props) {
 			documentation: Rights.has('documentation', 'update'),
 			link: Rights.has('link', 'read'),
 			providers: Rights.has('providers', 'read'),
+			prov_overwrite: Rights.has('prov_overwrite', 'read'),
 			report_recipients: Rights.has('report_recipients', 'read'),
 			rx_product: Rights.has('rx_product', 'read'),
 			user: Rights.has('user', 'read')
@@ -134,6 +132,28 @@ export default function Header(props) {
 		});
 	}
 
+	// Toggles sub-menus and stores the state in local storage
+	function subMenuToggle(name) {
+
+		// Clone the current subs
+		let oSubs = clone(subs);
+
+		// If the name exists, delete it
+		if(oSubs[name]) {
+			delete oSubs[name];
+		}
+		// Else, add it
+		else {
+			oSubs[name] = true;
+		}
+
+		// Store the value in storage
+		localStorage.setItem('submenu', JSON.stringify(oSubs));
+
+		// Update the state
+		subsSet(oSubs);
+	}
+
 	// Render
 	return (
 		<Box id="header">
@@ -169,30 +189,43 @@ export default function Header(props) {
 				onClose={menuToggle}
 			>
 				<List>
-					{rights.csr_agents &&
-						<Link to="/agents" onClick={menuToggle}>
-							<ListItem button>
-								<ListItemIcon><PeopleIcon /></ListItemIcon>
-								<ListItemText primary="Agents" />
-							</ListItem>
-						</Link>
-					}
-					{rights.csr_overwrite &&
-						<Link to="/claims/agent" onClick={menuToggle}>
-							<ListItem button>
+					{(rights.csr_agents || rights.csr_overwrite) &&
+						<React.Fragment>
+							<ListItem button key="Agents" onClick={ev => subMenuToggle('agent')}>
 								<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
-								<ListItemText primary="Agent Claims" />
+								<ListItemText primary="Agents" />
+								{subs.agent ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
-						</Link>
+							<Collapse in={subs.agent || false} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									{rights.csr_agents &&
+										<Link to="/agent/accounts" onClick={menuToggle}>
+											<ListItem button>
+												<ListItemIcon><PeopleIcon /></ListItemIcon>
+												<ListItemText primary="Accounts" />
+											</ListItem>
+										</Link>
+									}
+									{rights.csr_overwrite &&
+										<Link to="/agent/claims" onClick={menuToggle}>
+											<ListItem button>
+												<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+												<ListItemText primary="Claims" />
+											</ListItem>
+										</Link>
+									}
+								</List>
+							</Collapse>
+						</React.Fragment>
 					}
 					{rights.calendly_admin &&
 						<React.Fragment>
-							<ListItem button key="Calendly" onClick={ev => { calendlySet(b => { localStorage.setItem('menuCalendly', b ? '' : 'x'); return !b;})}}>
+							<ListItem button key="Calendly" onClick={ev => subMenuToggle('calendly')}>
 								<ListItemIcon><TodayIcon /></ListItemIcon>
 								<ListItemText primary="Calendly" />
-								{calendly ? <ExpandLess /> : <ExpandMore />}
+								{subs.calendly ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
-							<Collapse in={calendly} timeout="auto" unmountOnExit>
+							<Collapse in={subs.calendly || false} timeout="auto" unmountOnExit>
 								<List component="div" className="submenu">
 									<Link to="/calendly/events" onClick={menuToggle}>
 										<ListItem button>
@@ -214,12 +247,12 @@ export default function Header(props) {
 					}
 					{rights.rx_product &&
 						<React.Fragment>
-							<ListItem button key="Pharmacy" onClick={ev => { pharmacySet(b => { localStorage.setItem('menuPharmacy', b ? '' : 'x'); return !b;})}}>
+							<ListItem button key="Pharmacy" onClick={ev => subMenuToggle('pharmacy')}>
 								<ListItemIcon><LocalPharmacyIcon /></ListItemIcon>
 								<ListItemText primary="Pharmacy" />
-								{pharmacy ? <ExpandLess /> : <ExpandMore />}
+								{subs.pharmacy ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
-							<Collapse in={pharmacy} timeout="auto" unmountOnExit>
+							<Collapse in={subs.pharmacy || false} timeout="auto" unmountOnExit>
 								<List component="div" className="submenu">
 									<Link to="/pharmacy/products" onClick={menuToggle}>
 										<ListItem button>
@@ -233,12 +266,12 @@ export default function Header(props) {
 					}
 					{rights.providers &&
 						<React.Fragment>
-							<ListItem button key="Pharmacy" onClick={ev => { providerSet(b => { localStorage.setItem('menuProvider', b ? '' : 'x'); return !b;})}}>
+							<ListItem button key="Pharmacy" onClick={ev => subMenuToggle('provider')}>
 								<ListItemIcon><LocalHospitalIcon /></ListItemIcon>
 								<ListItemText primary="Providers" />
-								{provider ? <ExpandLess /> : <ExpandMore />}
+								{subs.provider ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
-							<Collapse in={provider} timeout="auto" unmountOnExit>
+							<Collapse in={subs.provider || false} timeout="auto" unmountOnExit>
 								<List component="div" className="submenu">
 									<Link to="/provider/accounts" onClick={menuToggle}>
 										<ListItem button>
@@ -255,6 +288,16 @@ export default function Header(props) {
 										</ListItem>
 									</Link>
 								</List>
+								{rights.prov_overwrite &&
+									<List component="div" className="submenu">
+										<Link to="/provider/claims" onClick={menuToggle}>
+											<ListItem button>
+												<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+												<ListItemText primary="Claims" />
+											</ListItem>
+										</Link>
+									</List>
+								}
 							</Collapse>
 						</React.Fragment>
 					}
@@ -268,12 +311,12 @@ export default function Header(props) {
 					}
 					{rights.documentation &&
 						<React.Fragment>
-							<ListItem button key="REST Docs" onClick={ev => { documentationSet(b => { localStorage.setItem('menuDocumentation', b ? '' : 'x'); return !b;})}}>
+							<ListItem button key="REST Docs" onClick={ev => subMenuToggle('docs')}>
 								<ListItemIcon><DescriptionIcon /></ListItemIcon>
 								<ListItemText primary="REST Docs" />
-								{documentation ? <ExpandLess /> : <ExpandMore />}
+								{subs.docs ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
-							<Collapse in={documentation} timeout="auto" unmountOnExit>
+							<Collapse in={subs.docs || false} timeout="auto" unmountOnExit>
 								<List component="div" className="submenu">
 									<Link to="/documentation/services" onClick={menuToggle}>
 										<ListItem button>

@@ -31,14 +31,15 @@ import { LoaderHide, LoaderShow } from './Loader';
 import SignIn from './SignIn';
 
 // Page component modules
-import Agents from './pages/Agents';
+import AgentAccounts from './pages/Agent/Accounts';
+import AgentClaims from './pages/Agent/Claims';
 import CalendlyEvents from './pages/Calendly/Events';
-import ClaimsAgent from './pages/ClaimsAgent';
 import DocsServices from './pages/Documentation/Services';
 import DocsErrors from './pages/Documentation/Errors';
 import Links from './pages/Links';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import ProviderAccounts from './pages/Provider/Accounts';
+import ProviderClaims from './pages/Provider/Claims';
 import ProviderStats from './pages/Provider/Stats';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
@@ -108,20 +109,20 @@ export default function Site(props) {
 				/>
 				<div id="content">
 					<Switch>
-						<Route exact path="/agents">
-							<Agents
+						<Route exact path="/agent/accounts">
+							<AgentAccounts
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/agent/claims">
+							<AgentClaims
 								mobile={mobile}
 								user={user}
 							/>
 						</Route>
 						<Route exact path="/calendly/events">
 							<CalendlyEvents
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/claims/agent">
-							<ClaimsAgent
 								mobile={mobile}
 								user={user}
 							/>
@@ -152,6 +153,12 @@ export default function Site(props) {
 						</Route>
 						<Route exact path="/provider/accounts">
 							<ProviderAccounts
+								mobile={mobile}
+								user={user}
+							/>
+						</Route>
+						<Route exact path="/provider/claims">
+							<ProviderClaims
 								mobile={mobile}
 								user={user}
 							/>
