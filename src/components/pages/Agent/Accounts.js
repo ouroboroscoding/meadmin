@@ -33,7 +33,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // Composites
-import Permissions from './Permissions';
+import Permissions from './Accounts_Permissions';
 
 // Format Components
 import { Form, Results } from 'shared/components/Format';
