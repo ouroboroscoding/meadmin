@@ -135,7 +135,7 @@ export default function Stats(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -190,7 +190,7 @@ export default function Stats(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));

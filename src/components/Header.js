@@ -112,7 +112,7 @@ export default function Header(props) {
 
 			// If there's an error
 			if(res.error && !Utils.serviceError(res.error)) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 
 			// If there's a warning
