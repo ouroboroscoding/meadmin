@@ -208,7 +208,7 @@ export default function Stats(props) {
 
 	// Render
 	return (
-		<Box id="providerStats">
+		<Box id="providerStats" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Provider Stats</Typography>
 			</Box>

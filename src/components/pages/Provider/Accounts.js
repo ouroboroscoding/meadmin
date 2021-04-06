@@ -269,7 +269,7 @@ export default function Providers(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="providers" className="page">
+		<Box id="providers" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Providers</Typography>
 				{Rights.has('providers', 'create') &&

@@ -108,7 +108,7 @@ export default function ClaimsAgent(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="claimsAgent" class="page">
+		<Box id="claimsAgent" class="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Claims by Agents</Typography>
 			</Box>

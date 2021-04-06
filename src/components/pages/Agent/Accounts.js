@@ -255,7 +255,7 @@ export default function Agents(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="agents" className="page">
+		<Box id="agents" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Agents</Typography>
 				{Rights.has('csr_agents', 'create') &&

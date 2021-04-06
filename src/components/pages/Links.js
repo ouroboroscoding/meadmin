@@ -303,7 +303,7 @@ export default function Links(props) {
 
 	// Render
 	return (
-		<Box id="links" className="page">
+		<Box id="links" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Links</Typography>
 				{rights.create &&

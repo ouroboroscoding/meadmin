@@ -182,7 +182,7 @@ export default function CalendlyEvents(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyCalendlyEvents" className="page">
+		<Box id="pharmacyCalendlyEvents" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Calendly Events</Typography>
 				{rights.create &&

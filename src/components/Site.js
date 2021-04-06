@@ -35,6 +35,7 @@ import Links from './pages/Links';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import ProviderAccounts from './pages/Provider/Accounts';
 import ProviderClaims from './pages/Provider/Claims';
+import ProviderPending from './pages/Provider/Pending';
 import ProviderStats from './pages/Provider/Stats';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
@@ -67,89 +68,96 @@ export default function Site(props) {
 		<SnackbarProvider maxSnack={3}>
 			<Alerts />
 			<div id="site">
-				{user === false &&
-					<SignIn />
-				}
 				<Header
 					mobile={mobile}
 					user={user}
 				/>
-				<div id="content">
-					<Switch>
-						<Route exact path="/agent/accounts">
-							<AgentAccounts
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/agent/claims">
-							<AgentClaims
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/calendly/events">
-							<CalendlyEvents
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/documentation/services">
-							<DocsServices
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/documentation/errors">
-							<DocsErrors
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/links">
-							<Links
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/pharmacy/products">
-							<PharmacyProducts
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/provider/accounts">
-							<ProviderAccounts
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/provider/claims">
-							<ProviderClaims
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/provider/stats">
-							<ProviderStats
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/reports">
-							<ReportRecipients
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/users">
-							<Users
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-					</Switch>
-				</div>
+				{user === false ?
+					<SignIn />
+				:
+					<div id="content">
+						<Switch>
+							<Route exact path="/agent/accounts">
+								<AgentAccounts
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/agent/claims">
+								<AgentClaims
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/calendly/events">
+								<CalendlyEvents
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/documentation/services">
+								<DocsServices
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/documentation/errors">
+								<DocsErrors
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/links">
+								<Links
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/pharmacy/products">
+								<PharmacyProducts
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/accounts">
+								<ProviderAccounts
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/claims">
+								<ProviderClaims
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/pending">
+								<ProviderPending
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/stats">
+								<ProviderStats
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/reports">
+								<ReportRecipients
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/users">
+								<Users
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+						</Switch>
+					</div>
+				}
 			</div>
 		</SnackbarProvider>
 	);

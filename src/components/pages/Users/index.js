@@ -148,7 +148,7 @@ export default function Users(props) {
 
 	// Render
 	return (
-		<Box id="users" className="page">
+		<Box id="users" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Users</Typography>
 				<Tooltip title="Create new User">

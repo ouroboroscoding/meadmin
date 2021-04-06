@@ -29,6 +29,7 @@ import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import DescriptionIcon from '@material-ui/icons/Description';
 import EmailIcon from '@material-ui/icons/Email';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -285,6 +286,14 @@ export default function Header(props) {
 										<ListItem button>
 											<ListItemIcon><AccessTimeIcon /></ListItemIcon>
 											<ListItemText primary="Stats" />
+										</ListItem>
+									</Link>
+								</List>
+								<List component="div" className="submenu">
+									<Link to="/provider/pending" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><MonetizationOnIcon /></ListItemIcon>
+											<ListItemText primary="Pending Orders" />
 										</ListItem>
 									</Link>
 								</List>

@@ -303,7 +303,7 @@ export default function ReportRecipients(props) {
 
 	// Render
 	return (
-		<Box id="reports">
+		<Box id="reports" className="page flexGrow">
 			<Box className="pageHeader">
 				<Typography variant="h3" className="title">Report Recipients</Typography>
 				<Tooltip title="Create new list of Recipients">
