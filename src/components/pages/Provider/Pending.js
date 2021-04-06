@@ -15,6 +15,8 @@ import Tree from 'format-oc/Tree'
 
 // Material UI
 import Box from '@material-ui/core/Box';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 
@@ -120,6 +122,22 @@ export default function Pending(props) {
 		<Box id="providerPending" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Pending Orders by State</Typography>
+				<FormControl>
+					<InputLabel htmlFor="encounter-filter">Encounter Type</InputLabel>
+					<Select
+						inputProps={{
+							id: 'encounter-filter'
+						}}
+						native
+						onChange={ev => filterSet({encounter: ev.target.value === 'all' ? null : ev.target.value})}
+						value={filter.encounter === null ? 'all' : filter.encounter}
+					>
+						<option value="all">All</option>
+						<option value="AS">Asynchronous</option>
+						<option value="A">Audio</option>
+						<option value="V">Video</option>
+					</Select>
+				</FormControl>
 			</Box>
 			{filtered === false ?
 				<Typography>Loading...</Typography>
