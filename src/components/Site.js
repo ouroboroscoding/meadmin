@@ -13,11 +13,7 @@ import React, { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 
-// Shared communication modules
-import Rest from 'shared/communication/rest';
-
 // Shared generic modules
-import Events from 'shared/generic/events';
 import Hash from 'shared/generic/hash';
 
 // Shared hooks
@@ -27,7 +23,6 @@ import { useResize } from 'shared/hooks/resize';
 // Site component modules
 import Alerts from './Alerts';
 import Header from './Header';
-import { LoaderHide, LoaderShow } from './Loader';
 import SignIn from './SignIn';
 
 // Page component modules
@@ -40,6 +35,7 @@ import Links from './pages/Links';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import ProviderAccounts from './pages/Provider/Accounts';
 import ProviderClaims from './pages/Provider/Claims';
+import ProviderPending from './pages/Provider/Pending';
 import ProviderStats from './pages/Provider/Stats';
 import ReportRecipients from './pages/ReportRecipients';
 import Users from './pages/Users';
@@ -47,39 +43,11 @@ import Users from './pages/Users';
 // CSS
 import 'sass/site.scss';
 
-// Init the rest services
-Rest.init(process.env.REACT_APP_MEMS_DOMAIN, process.env.REACT_APP_WS_DOMAIN, xhr => {
-
-	// If we got a 401, let everyone know we signed out
-	if(xhr.status === 401) {
-		Events.trigger('error', 'You have been signed out!');
-		Events.trigger('signedOut');
-	} else {
-		Events.trigger('error',
-			'Unable to connect to ' + process.env.REACT_APP_MEMS_DOMAIN +
-			': ' + xhr.statusText +
-			' (' + xhr.status + ')');
-	}
-}, (method, url, data, opts) => {
-	LoaderShow();
-}, (method, url, data, opts) => {
-	LoaderHide();
-});
-
-// If we have a session, fetch the user
-if(Rest.session()) {
-	Rest.read('auth', 'session', {}).done(res => {
-		Rest.read('auth', 'user', {}).done(res => {
-			Events.trigger('signedIn', res.data);
-		});
-	});
-}
+// Rest Init
+import 'rest_init';
 
 // Init the hash
 Hash.init();
-
-// Hide the loader
-LoaderHide();
 
 // Site
 export default function Site(props) {
@@ -100,89 +68,96 @@ export default function Site(props) {
 		<SnackbarProvider maxSnack={3}>
 			<Alerts />
 			<div id="site">
-				{user === false &&
-					<SignIn />
-				}
 				<Header
 					mobile={mobile}
 					user={user}
 				/>
-				<div id="content">
-					<Switch>
-						<Route exact path="/agent/accounts">
-							<AgentAccounts
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/agent/claims">
-							<AgentClaims
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/calendly/events">
-							<CalendlyEvents
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/documentation/services">
-							<DocsServices
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/documentation/errors">
-							<DocsErrors
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/links">
-							<Links
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/pharmacy/products">
-							<PharmacyProducts
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/provider/accounts">
-							<ProviderAccounts
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/provider/claims">
-							<ProviderClaims
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/provider/stats">
-							<ProviderStats
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/reports">
-							<ReportRecipients
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-						<Route exact path="/users">
-							<Users
-								mobile={mobile}
-								user={user}
-							/>
-						</Route>
-					</Switch>
-				</div>
+				{user === false ?
+					<SignIn />
+				:
+					<div id="content">
+						<Switch>
+							<Route exact path="/agent/accounts">
+								<AgentAccounts
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/agent/claims">
+								<AgentClaims
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/calendly/events">
+								<CalendlyEvents
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/documentation/services">
+								<DocsServices
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/documentation/errors">
+								<DocsErrors
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/links">
+								<Links
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/pharmacy/products">
+								<PharmacyProducts
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/accounts">
+								<ProviderAccounts
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/claims">
+								<ProviderClaims
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/pending">
+								<ProviderPending
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/provider/stats">
+								<ProviderStats
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/reports">
+								<ReportRecipients
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/users">
+								<Users
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+						</Switch>
+					</div>
+				}
 			</div>
 		</SnackbarProvider>
 	);

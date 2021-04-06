@@ -80,7 +80,7 @@ function Service(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -245,7 +245,7 @@ export default function Services(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -280,12 +280,12 @@ export default function Services(props) {
 
 	// If we haven't finished loading
 	if(services === null) {
-		return <Box id="docsServices"><Typography>Loading...</Typography></Box>
+		return <Box className="page"><Typography>Loading...</Typography></Box>
 	}
 
 	// Render
 	return (
-		<Box id="docsServices">
+		<Box id="docsServices" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Documentaton Services</Typography>
 				{rights.create &&

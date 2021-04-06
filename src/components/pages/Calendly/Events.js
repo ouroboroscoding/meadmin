@@ -143,7 +143,7 @@ export default function CalendlyEvents(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -182,7 +182,7 @@ export default function CalendlyEvents(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyCalendlyEvents" className="page">
+		<Box id="pharmacyCalendlyEvents" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Calendly Events</Typography>
 				{rights.create &&

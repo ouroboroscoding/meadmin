@@ -1,9 +1,4 @@
 #providerStats {
-	flex-basis: 0;
-	flex-shrink: 1;
-	flex-grow: 1;
-
-	padding: 10px;
 
 	.filter {
 
@@ -23,5 +18,12 @@
 
 	.field_hours, .field_approvals, .field_declines, .field_average {
 		text-align: right;
+	}
+}
+
+#providerPending {
+
+	.field_legalEncounterType, .field_new, .field_expiring, .field_total {
+		text-align: center;
 	}
 }

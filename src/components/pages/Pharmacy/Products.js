@@ -139,7 +139,7 @@ export default function Products(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -178,7 +178,7 @@ export default function Products(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyProducts" className="page">
+		<Box id="pharmacyProducts" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Products to NDCs</Typography>
 				{rights.create &&

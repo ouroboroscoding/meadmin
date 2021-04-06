@@ -69,7 +69,7 @@ export default function ClaimsProvider(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -108,7 +108,7 @@ export default function ClaimsProvider(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="claimsProvider" class="page">
+		<Box id="claimsProvider" class="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Claims by Providers</Typography>
 			</Box>

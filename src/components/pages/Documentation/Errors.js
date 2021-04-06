@@ -123,7 +123,7 @@ export default function Errors(props) {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
-				Events.trigger('error', JSON.stringify(res.error));
+				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 			if(res.warning) {
 				Events.trigger('warning', JSON.stringify(res.warning));
@@ -158,12 +158,12 @@ export default function Errors(props) {
 
 	// If we haven't finished loading
 	if(errors === null) {
-		return <Box id="docsErrors"><Typography>Loading...</Typography></Box>
+		return <Box className="page"><Typography>Loading...</Typography></Box>
 	}
 
 	// Render
 	return (
-		<Box id="docsErrors">
+		<Box id="docsErrors" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Documentaton Errors</Typography>
 				{rights.create &&
