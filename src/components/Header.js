@@ -36,6 +36,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import EventIcon from '@material-ui/icons/Event';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import HeadsetMicIcon from '@material-ui/icons/HeadsetMic';
 import GroupIcon from '@material-ui/icons/Group';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import LinkIcon from '@material-ui/icons/Link';
@@ -193,7 +194,7 @@ export default function Header(props) {
 					{(rights.csr_agents || rights.csr_overwrite) &&
 						<React.Fragment>
 							<ListItem button key="Agents" onClick={ev => subMenuToggle('agent')}>
-								<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+								<ListItemIcon><HeadsetMicIcon /></ListItemIcon>
 								<ListItemText primary="Agents" />
 								{subs.agent ? <ExpandLess /> : <ExpandMore />}
 							</ListItem>
