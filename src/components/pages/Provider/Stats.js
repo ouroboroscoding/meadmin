@@ -58,10 +58,10 @@ const StatsParent = new Parent({
 	memoId: {__type__: 'uint'},
 	firstName: {__type__: 'string', __react__: {title: 'First'}},
 	lastName: {__type__: 'string', __react__: {title: 'Last'}},
-	hours: {__type__: 'string'},
+	hours: {__type__: 'string', __react__: {type: 'time_elapsed'}},
 	approvals: {__type__: 'uint'},
 	declines: {__type__: 'uint'},
-	average: {__type__: 'string'}
+	average: {__type__: 'string', __react__: {type: 'time_average'}}
 });
 
 const TrackingTree = new Tree(ProviderTracking)
@@ -260,6 +260,7 @@ export default function Stats(props) {
 							orderBy="lastName"
 							remove={false}
 							service=""
+							totals={true}
 							tree={StatsParent}
 							update={false}
 						/>
