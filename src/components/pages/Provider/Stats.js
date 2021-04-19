@@ -119,6 +119,7 @@ export default function Stats(props) {
 
 		// Init the new dialog value
 		let oDialog = {
+			id: id,
 			name: oStat.firstName + ' ' + oStat.lastName,
 			results: 0
 		};
@@ -274,7 +275,7 @@ export default function Stats(props) {
 					onClose={ev => dialogSet(false)}
 					open={true}
 				>
-					<DialogTitle id="tracking-dialog-title">{dialog.name}</DialogTitle>
+					<DialogTitle id="tracking-dialog-title">{dialog.name} - ID: {dialog.id}</DialogTitle>
 					<DialogContent dividers>
 						{dialog.results === 0 ?
 							<Typography>Loading...</Typography>
