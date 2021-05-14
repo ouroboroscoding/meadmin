@@ -73,7 +73,7 @@ function TicketBreakdown(props) {
 			}
 		})
 
-	}, [props._id])
+	}, [props.value._id])
 
 	// Render
 	return (
