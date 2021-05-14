@@ -176,11 +176,11 @@ export default function Agents(props) {
 		});
 	}
 
-	function permissionsShow(agent_id) {
+	function permissionsShow(agent) {
 
 		// Fetch the agent's permissions
 		Rest.read('csr', 'agent/permissions', {
-			"agent_id": agent_id
+			"agent_id": agent._id
 		}).done(res => {
 
 			// If there's an error or warning
@@ -196,7 +196,7 @@ export default function Agents(props) {
 
 				// Set the permissions
 				permissionsSet({
-					"_id": agent_id,
+					"_id": agent._id,
 					"rights": res.data
 				});
 			}
@@ -297,7 +297,7 @@ export default function Agents(props) {
 				<Results
 					actions={[
 						{"tooltip": "Edit Agent's permissions", "icon": HttpsIcon, "callback": permissionsShow},
-						{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent_id => passwordSet(agent_id)}
+						{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent => passwordSet(agent._id)}
 					]}
 					data={agents}
 					errors={{

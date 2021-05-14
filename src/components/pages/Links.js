@@ -260,10 +260,10 @@ export default function Links(props) {
 	}
 
 	// Show individual url views
-	function viewsShow(_id) {
+	function viewsShow(link) {
 
 		// Find the record associated with the ID
-		let oUrl = afindo(links, '_id', _id);
+		let oUrl = afindo(links, '_id', link._id);
 
 		// Init the new dialog value
 		let oDialog = {
@@ -276,7 +276,7 @@ export default function Links(props) {
 
 		// Make the request to the server for the results
 		Rest.read('link', 'stats', {
-			_id: _id
+			_id: link._id
 		}).done(res => {
 
 			// If there's an error or warning

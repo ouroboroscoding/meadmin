@@ -28,6 +28,7 @@ import SignIn from './SignIn';
 // Page component modules
 import AgentAccounts from './pages/Agent/Accounts';
 import AgentClaims from './pages/Agent/Claims';
+import AgentTickets from './pages/Agent/Tickets';
 import CalendlyEvents from './pages/Calendly/Events';
 import DocsServices from './pages/Documentation/Services';
 import DocsErrors from './pages/Documentation/Errors';
@@ -85,6 +86,12 @@ export default function Site(props) {
 							</Route>
 							<Route exact path="/agent/claims">
 								<AgentClaims
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/agent/tickets">
+								<AgentTickets
 									mobile={mobile}
 									user={user}
 								/>

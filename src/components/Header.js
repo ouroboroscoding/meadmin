@@ -29,7 +29,7 @@ import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DescriptionIcon from '@material-ui/icons/Description';
 import EmailIcon from '@material-ui/icons/Email';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -43,6 +43,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import LocalPharmacyIcon from '@material-ui/icons/LocalPharmacy';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import MenuIcon from '@material-ui/icons/Menu';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PeopleIcon from '@material-ui/icons/People';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
@@ -209,12 +210,20 @@ export default function Header(props) {
 										</Link>
 									}
 									{rights.csr_overwrite &&
-										<Link to="/agent/claims" onClick={menuToggle}>
-											<ListItem button>
-												<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
-												<ListItemText primary="Claims" />
-											</ListItem>
-										</Link>
+										<React.Fragment>
+											<Link to="/agent/claims" onClick={menuToggle}>
+												<ListItem button>
+													<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+													<ListItemText primary="Claims" />
+												</ListItem>
+											</Link>
+											<Link to="/agent/tickets" onClick={menuToggle}>
+												<ListItem button>
+													<ListItemIcon><ConfirmationNumberIcon /></ListItemIcon>
+													<ListItemText primary="Tickets" />
+												</ListItem>
+											</Link>
+										</React.Fragment>
 									}
 								</List>
 							</Collapse>

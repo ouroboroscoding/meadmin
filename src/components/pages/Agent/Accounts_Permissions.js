@@ -34,7 +34,7 @@ const TYPES = [
 	{title: "Customer Service", rights: [
 		{name: "csr_agents", title: "Agents: Ability to manage agents and permissions", allowed: ALL},
 		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
-		{name: "csr_overwrite", title: "Claim Overwrite", allowed: CREATE},
+		{name: "csr_overwrite", title: "Claim Overwrite", allowed: CREATE | READ},
 		{name: "csr_claims_provider", title: "Transfer to Provider", allowed: CREATE},
 		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
 		{name: "csr_templates", title: "Templates: Ability to create and modify templates", allowed: ALL},

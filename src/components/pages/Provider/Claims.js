@@ -108,7 +108,7 @@ export default function ClaimsProvider(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="claimsProvider" class="page flexGrow">
+		<Box id="claimsProvider" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Claims by Providers</Typography>
 			</Box>

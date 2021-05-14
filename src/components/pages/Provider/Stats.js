@@ -35,7 +35,7 @@ import Rest from 'shared/communication/rest';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { afindo, clone, date, dateInc, datetime, safeLocalStorage } from 'shared/generic/tools';
+import { clone, date, dateInc, datetime, safeLocalStorage } from 'shared/generic/tools';
 
 // Definitions
 import TrackingDef from 'definitions/providers/tracking';
@@ -112,15 +112,12 @@ export default function Stats(props) {
 	}, [dialog, filter])
 
 	// Show individual provider breakdown
-	function breakdownShow(id) {
-
-		// Find the record associated with the ID
-		let oStat = afindo(results, 'memoId', id);
+	function breakdownShow(provider) {
 
 		// Init the new dialog value
 		let oDialog = {
-			id: id,
-			name: oStat.firstName + ' ' + oStat.lastName,
+			id: provider.memoId,
+			name: provider.firstName + ' ' + provider.lastName,
 			results: 0
 		};
 
@@ -129,7 +126,7 @@ export default function Stats(props) {
 
 		// Make the request to the server for the results
 		Rest.read('providers', 'provider/tracking', {
-			memo_id: id,
+			memo_id: provider.memoId,
 			start: range[0],
 			end: range[1]
 		}).done(res => {

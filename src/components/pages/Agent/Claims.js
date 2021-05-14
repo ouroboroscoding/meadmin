@@ -28,7 +28,7 @@ import Rights from 'shared/communication/rights';
 import Events from 'shared/generic/events';
 import { afindi, clone } from 'shared/generic/tools';
 
-// Agent Definition
+// Claim Definition
 import ClaimDef from 'definitions/monolith/customer_claimed';
 
 // Generate the agent Tree
@@ -108,7 +108,7 @@ export default function ClaimsAgent(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="claimsAgent" class="page flexGrow">
+		<Box id="claimsAgent" className="page flexGrow">
 			<Box className="page_header">
 				<Typography className="title">Claims by Agents</Typography>
 			</Box>
