@@ -87,11 +87,11 @@ export default function Users(props) {
 		permissionsSet(false);
 	}
 
-	function permissionsShow(user_id) {
+	function permissionsShow(user) {
 
 		// Fetch the agent's permissions
 		Rest.read('auth', 'permissions', {
-			"user": user_id
+			"user": user._id
 		}).done(res => {
 
 			// If there's an error or warning
@@ -107,7 +107,7 @@ export default function Users(props) {
 
 				// Set the permissions
 				permissionsSet({
-					"_id": user_id,
+					"_id": user._id,
 					"rights": res.data
 				});
 			}

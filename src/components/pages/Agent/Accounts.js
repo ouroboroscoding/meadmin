@@ -68,12 +68,10 @@ export default function Agents(props) {
 	let [create, createSet] = useState(false);
 	let [memo, memoSet] = useState(false);
 	let [password, passwordSet] = useState(false);
-	let [permissions, permissionsSet] = useState(false);
 
 	// Refs
 	let memoRef = useRef();
 	let passwdRef = useRef();
-	let permsRef = useRef();
 
 	// Effects
 	useEffect(() => {
@@ -176,61 +174,6 @@ export default function Agents(props) {
 		});
 	}
 
-	function permissionsShow(agent_id) {
-
-		// Fetch the agent's permissions
-		Rest.read('csr', 'agent/permissions', {
-			"agent_id": agent_id
-		}).done(res => {
-
-			// If there's an error or warning
-			if(res.error && !res._handled) {
-				Events.trigger('error', Rest.errorMessage(res.error));
-			}
-			if(res.warning) {
-				Events.trigger('warning', JSON.stringify(res.warning));
-			}
-
-			// If there's data
-			if(res.data) {
-
-				// Set the permissions
-				permissionsSet({
-					"_id": agent_id,
-					"rights": res.data
-				});
-			}
-		});
-	}
-
-	function permissionsUpdate() {
-
-		// Update the agent's permissions
-		Rest.update('csr', 'agent/permissions', {
-			"agent_id": permissions._id,
-			"permissions": permsRef.current.value
-		}).done(res => {
-
-			// If there's an error or warning
-			if(res.error && !res._handled) {
-				Events.trigger('error', Rest.errorMessage(res.error));
-			}
-			if(res.warning) {
-				Events.trigger('warning', JSON.stringify(res.warning));
-			}
-
-			// If there's data
-			if(res.data) {
-
-				// Hide permissions dialog
-				permissionsSet(false);
-
-				// Notify success
-				Events.trigger('success', 'Permissions updated');
-			}
-		});
-	}
-
 	// Remove a agent
 	function removeAgent(_id) {
 
@@ -267,7 +210,7 @@ export default function Agents(props) {
 						</Tooltip>
 						<Tooltip title="Create New Agent">
 							<IconButton onClick={ev => createSet(b => !b)}>
-								<AddCircleIcon />
+								<AddCircleIcon className={(create ? 'open' : 'closed')} />
 							</IconButton>
 						</Tooltip>
 					</React.Fragment>
@@ -296,8 +239,8 @@ export default function Agents(props) {
 			:
 				<Results
 					actions={[
-						{"tooltip": "Edit Agent's permissions", "icon": HttpsIcon, "callback": permissionsShow},
-						{"tooltip": "Change Agent's password", "icon": VpnKeyIcon, "callback": agent_id => passwordSet(agent_id)}
+						{tooltip: "Edit Agent's permissions", icon: HttpsIcon, component: Permissions},
+						{tooltip: "Change Agent's password", icon: VpnKeyIcon, callback: agent => passwordSet(agent._id)}
 					]}
 					data={agents}
 					errors={{
@@ -310,30 +253,6 @@ export default function Agents(props) {
 					tree={AgentTree}
 					update={Rights.has('csr_agents', 'update')}
 				/>
-			}
-			{permissions &&
-				<Dialog
-					aria-labelledby="permissions-dialog-title"
-					maxWidth="lg"
-					onClose={ev => permissionsSet(false)}
-					open={true}
-				>
-					<DialogTitle id="permissions-dialog-title">Update Permissions</DialogTitle>
-					<DialogContent dividers>
-						<Permissions
-							ref={permsRef}
-							value={permissions.rights}
-						/>
-					</DialogContent>
-					<DialogActions>
-						<Button variant="contained" color="secondary" onClick={ev => permissionsSet(false)}>
-							Cancel
-						</Button>
-						<Button variant="contained" color="primary" onClick={permissionsUpdate}>
-							Update
-						</Button>
-					</DialogActions>
-				</Dialog>
 			}
 			{password &&
 				<Dialog

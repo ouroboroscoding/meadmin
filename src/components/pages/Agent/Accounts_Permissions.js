@@ -10,14 +10,20 @@
 
 // NPM modules
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Material UI
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 
+// Shared communications modules
+import Rest from 'shared/communication/rest';
+
 // Shared generic modules
+import Events from 'shared/generic/events';
 import { clone } from 'shared/generic/tools';
 
 // defines
@@ -34,7 +40,7 @@ const TYPES = [
 	{title: "Customer Service", rights: [
 		{name: "csr_agents", title: "Agents: Ability to manage agents and permissions", allowed: ALL},
 		{name: "csr_claims", title: "Claims", allowed: CREATE | UPDATE | DELETE},
-		{name: "csr_overwrite", title: "Claim Overwrite", allowed: CREATE},
+		{name: "csr_overwrite", title: "Claim Overwrite", allowed: CREATE | READ},
 		{name: "csr_claims_provider", title: "Transfer to Provider", allowed: CREATE},
 		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
 		{name: "csr_templates", title: "Templates: Ability to create and modify templates", allowed: ALL},
@@ -63,7 +69,16 @@ const TYPES = [
 	]}
 ];
 
-// Permission
+/**
+ * Permission
+ *
+ * Handles a single permission
+ *
+ * @name Permission
+ * @access private
+ * @param Object props Attributes sent to the component
+ * @return React.Component
+ */
 function Permission(props) {
 
 	function change(event) {
@@ -108,83 +123,136 @@ Permission.propTypes = {
 	"value": PropTypes.number.isRequired
 }
 
-// Permissions
-export default class Permissions extends React.Component {
+/**
+ * Permissions
+ *
+ * Handles permissions for a single agent
+ *
+ * @name Permissions
+ * @access public
+ * @param Object props Attributes sent to the component
+ * @return React.Component
+ */
+export default function Permissions(props) {
 
-	constructor(props) {
+	// State
+	let [permissions, permissionsSet] = useState(false);
 
-		// Call parent
-		super(props);
+	// Load effect
+	useEffect(() => {
 
-		// Initial state
-		this.state = {
-			"value": props.value
-		}
+		// Fetch the agent's permissions
+		Rest.read('csr', 'agent/permissions', {
+			agent_id: props.value._id
+		}).done(res => {
 
-		// Bind methods
-		this.change = this.change.bind(this);
-	}
+			// If there's an error or warning
+			if(res.error && !res._handled) {
+				Events.trigger('error', Rest.errorMessage(res.error));
+			}
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
 
-	change(name, rights) {
+			// If there's data
+			if(res.data) {
+
+				// Set the permissions
+				permissionsSet(res.data);
+			}
+		});
+	}, [props.value]);
+
+	// Called when any permission is changed
+	function change(name, rights) {
 
 		// Clone the current values
-		let value = clone(this.state.value);
+		let oPermissions = clone(permissions);
 
 		// If there are rights
 		if(rights) {
 
 			// Update the specific permission
-			if(value[name]) {
-				value[name].rights = rights;
+			if(oPermissions[name]) {
+				oPermissions[name].rights = rights;
 			} else {
-				value[name] = {"rights": rights, "idents": null};
+				oPermissions[name] = {"rights": rights, "idents": null};
 			}
 		}
 
 		// Else, remove the right
 		else {
-			delete value[name];
+			delete oPermissions[name];
 		}
 
 		// Update the state
-		this.setState({"value": value})
+		permissionsSet(oPermissions);
 	}
 
-	render() {
-		return TYPES.map(section =>
-			<Paper key={section.title} className="permissions">
-				<Grid container spacing={2}>
-					<Grid item xs={4} className="title">{section.title}</Grid>
-					<Grid item xs={2} className="title">Create</Grid>
-					<Grid item xs={2} className="title">Read</Grid>
-					<Grid item xs={2} className="title">Update</Grid>
-					<Grid item xs={2} className="title">Delete</Grid>
-					{section.rights.map(perm =>
-						<Permission
-							allowed={perm.allowed}
-							key={perm.name}
-							name={perm.name}
-							onChange={this.change}
-							title={perm.title}
-							value={this.state.value[perm.name] ? this.state.value[perm.name].rights : 0}
-						/>
-					)}
-				</Grid>
-			</Paper>
-		);
+	// Called to update permissions
+	function update() {
+
+		// Update the agent's permissions
+		Rest.update('csr', 'agent/permissions', {
+			agent_id: props.value._id,
+			permissions: permissions
+		}).done(res => {
+
+			// If there's an error or warning
+			if(res.error && !res._handled) {
+				Events.trigger('error', Rest.errorMessage(res.error));
+			}
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Notify success
+				Events.trigger('success', 'Permissions updated');
+
+				// Let parent know to close
+				props.onClose();
+			}
+		});
 	}
 
-	get value() {
-		return this.state.value;
-	}
+	// Render
+	return (
+		<React.Fragment>
+			{TYPES.map(section =>
+				<Paper key={section.title} className="permissions">
+					<Grid container spacing={2}>
+						<Grid item xs={4} className="title">{section.title}</Grid>
+						<Grid item xs={2} className="title">Create</Grid>
+						<Grid item xs={2} className="title">Read</Grid>
+						<Grid item xs={2} className="title">Update</Grid>
+						<Grid item xs={2} className="title">Delete</Grid>
+						{section.rights.map(perm =>
+							<Permission
+								allowed={perm.allowed}
+								key={perm.name}
+								name={perm.name}
+								onChange={change}
+								title={perm.title}
+								value={permissions[perm.name] ? permissions[perm.name].rights : 0}
+							/>
+						)}
+					</Grid>
+				</Paper>
+			)}
+			<Box className="actions">
+				<Button variant="contained" color="secondary" onClick={props.onClose}>Cancel</Button>
+				<Button variant="contained" color="primary" onClick={update}>Update</Button>
+			</Box>
+		</React.Fragment>
+	);
 }
 
 // Force props
 Permissions.propTypes = {
-	"value": PropTypes.object
+	agent: PropTypes.string.isRequired,
+	onClose: PropTypes.func.isRequired
 }
 
-// Default props
-Permissions.defaultTypes = {
-	"value": {}
-}

@@ -5,8 +5,9 @@
 $menu-width: 250px;
 
 /* shared */
-@import '../shared/sass/format.scss';
-@import 'flex';
+@import '../shared/sass/flex';
+@import '../shared/sass/format';
+@import '../shared/sass/Messages';
 
 /* components */
 @import 'header';
@@ -14,6 +15,7 @@ $menu-width: 250px;
 @import 'signin';
 
 /* pages */
+@import 'pages/agents';
 @import 'pages/documentation';
 @import 'pages/permissions';
 @import 'pages/providers';
@@ -119,6 +121,26 @@ td {
 	.title {
 		flex-grow: 1;
 		font-size: 2rem;
+		font-weight: 400;
+		margin: 0 0 10px 0;
+	}
+
+	button {
+		position: relative;
+		top: -15px;
+
+		.MuiSvgIcon-root {
+			font-size: 2.5rem;
+		}
+	}
+}
+
+.section_header {
+	display: flex;
+
+	.title {
+		flex-grow: 1;
+		font-size: 1.75rem;
 		font-weight: 400;
 		margin: 0 0 10px 0;
 	}

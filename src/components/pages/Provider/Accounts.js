@@ -190,11 +190,11 @@ export default function Providers(props) {
 		})
 	}
 
-	function permissionsShow(provider_id) {
+	function permissionsShow(provider) {
 
 		// Fetch the provider's permissions
 		Rest.read('providers', 'provider/permissions', {
-			"provider_id": provider_id
+			"provider_id": provider._id
 		}).done(res => {
 
 			// If there's an error or warning
@@ -210,7 +210,7 @@ export default function Providers(props) {
 
 				// Set the permissions
 				permissionsSet({
-					"_id": provider_id,
+					"_id": provider._id,
 					"rights": res.data
 				});
 			}
@@ -311,7 +311,7 @@ export default function Providers(props) {
 				<Results
 					actions={[
 						{"tooltip": "Edit Provider's permissions", "icon": HttpsIcon, "callback": permissionsShow},
-						{"tooltip": "Change Provider's password", "icon": VpnKeyIcon, "callback": provider_id => passwordSet(provider_id)}
+						{"tooltip": "Change Provider's password", "icon": VpnKeyIcon, "callback": provider => passwordSet(provider._id)}
 					]}
 					data={providers}
 					errors={{
