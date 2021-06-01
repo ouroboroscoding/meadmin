@@ -94,6 +94,28 @@ export default function Agents(props) {
 		createSet(false);
 	}
 
+	// Remove a agent
+	function agentRemove(_id) {
+
+		// Use the current agents to set the new agents
+		agentsSet(agents => {
+
+			// Clone the agents
+			let ret = clone(agents);
+
+			// Find the index
+			let iIndex = afindi(ret, '_id', _id);
+
+			// If one is found, remove it
+			if(iIndex > -1) {
+				ret.splice(iIndex, 1);
+			}
+
+			// Return the new agents
+			return ret;
+		});
+	}
+
 	// Fetch all the agents from the server
 	function agentsFetch() {
 
@@ -117,6 +139,22 @@ export default function Agents(props) {
 				agentsSet(res.data);
 			}
 		});
+	}
+
+	// Update an agent
+	function agentUpdate(agent) {
+
+		// Find the agent
+		let iIndex = afindi(agents, '_id', agent._id);
+
+		// If it exists
+		if(iIndex > -1) {
+
+			// Clone the existing, update, and set the new state
+			let lAgents = clone(agents);
+			lAgents[iIndex] = agent;
+			agentsSet(lAgents);
+		}
 	}
 
 	function memoImport() {
@@ -174,28 +212,6 @@ export default function Agents(props) {
 		});
 	}
 
-	// Remove a agent
-	function removeAgent(_id) {
-
-		// Use the current agents to set the new agents
-		agentsSet(agents => {
-
-			// Clone the agents
-			let ret = clone(agents);
-
-			// Find the index
-			let iIndex = afindi(ret, '_id', _id);
-
-			// If one is found, remove it
-			if(iIndex > -1) {
-				ret.splice(iIndex, 1);
-			}
-
-			// Return the new agents
-			return ret;
-		});
-	}
-
 	// Return the rendered component
 	return (
 		<Box id="agents" className="page flexGrow">
@@ -248,10 +264,10 @@ export default function Agents(props) {
 					}}
 					noun="agent"
 					orderBy="userName"
-					remove={Rights.has('csr_agents', 'delete') ? removeAgent : false}
+					remove={Rights.has('csr_agents', 'delete') ? agentRemove : false}
 					service="csr"
 					tree={AgentTree}
-					update={Rights.has('csr_agents', 'update')}
+					update={Rights.has('csr_agents', 'update') ? agentUpdate : false}
 				/>
 			}
 			{password &&
