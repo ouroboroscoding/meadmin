@@ -19,6 +19,11 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -35,7 +40,7 @@ import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { afindi, clone, date, dateInc } from 'shared/generic/tools';
+import { afindi, clone, date, dateInc, omap, sortByKey } from 'shared/generic/tools';
 
 // Ticket Definition
 import TicketDef from 'definitions/csr/ticket_with_state';
@@ -105,6 +110,7 @@ export default function Tickets(props) {
 	// State
 	let [agent, agentSet] = useState('0');
 	let [agents, agentsSet] = useState([]);
+	let [counts, countsSet] = useState(false);
 	let [range, rangeSet] = useState(null);
 	let [tickets, ticketsSet] = useState(false);
 
@@ -128,6 +134,36 @@ export default function Tickets(props) {
 		}
 	// eslint-disable-next-line
 	}, [range]);
+
+	// Calculates the totals by opened type for tickets
+	function countsCalculate(tickets) {
+
+		// Init the counts by type
+		let oCounts = {}
+
+		// Go through each ticket
+		for(let o of tickets) {
+
+			// If we don't have the type
+			if(!(o.opened_type in oCounts)) {
+				oCounts[o.opened_type] = 0;
+			}
+
+			// Increment the count
+			++oCounts[o.opened_type];
+		}
+
+		// Create a list from the type and count
+		let lCounts = omap(oCounts, (i,k) => {
+			return {type: k, count: i}
+		});
+
+		// Sort it alphabetically by type
+		lCounts.sort(sortByKey('type'));
+
+		// Store the new list
+		countsSet(lCounts);
+	}
 
 	// Converts the start and end dates into timestamps
 	function rangeUpdate() {
@@ -167,13 +203,15 @@ export default function Tickets(props) {
 
 			// If we have data
 			if(res.data) {
+
+				// Calculate the totals
+				countsCalculate(res.data);
+
+				// Set the tickets
 				ticketsSet(res.data);
 			}
 		})
 	}
-
-	// Generate today date
-	let sToday = date(new Date(), '-');
 
 	// Remove a ticket
 	function removeTicket(_id) {
@@ -193,6 +231,15 @@ export default function Tickets(props) {
 			// Set the new tickets
 			ticketsSet(lTickets);
 		}
+	}
+
+	// Generate today date
+	let sToday = date(new Date(), '-');
+
+	// If we have counts
+	let CellPercentage = 0.0;
+	if(counts) {
+		CellPercentage = (Math.round((100 / counts.length) * 100) / 100) + '%';
 	}
 
 	// Return the rendered component
@@ -252,6 +299,16 @@ export default function Tickets(props) {
 					variant="contained"
 				>Fetch</Button>
 			</Box>
+			{counts &&
+				<Table stickyHeader>
+					<TableHead>
+						<TableRow>{counts.map((o,i) => <TableCell key={i} style={{width: CellPercentage}}>{o.type}</TableCell>)}</TableRow>
+					</TableHead>
+					<TableBody>
+						<TableRow>{counts.map((o,i) => <TableCell key={i}>{o.count}</TableCell>)}</TableRow>
+					</TableBody>
+				</Table>
+			}
 			{tickets &&
 				<Box className="tickets">
 					{tickets.length === 0 ?
@@ -263,6 +320,10 @@ export default function Tickets(props) {
 								icon: ListIcon,
 								component: TicketBreakdown
 							}]}
+							custom={{
+								phone_number: val => <a href={'https://' + process.env.REACT_APP_MECSR_DOMAIN + '/view/' + val.phone_number + '/' + (val.crm_id || '0')} target="_blank" rel="noreferrer">{val.phone_number}</a>,
+								crm_id: val => <a href={'https://' + process.env.REACT_APP_MECSR_DOMAIN + '/view/' + val.phone_number + '/' + (val.crm_id || '0')} target="_blank" rel="noreferrer">{val.crm_id}</a>
+							}}
 							data={tickets}
 							noun="ticket"
 							orderBy="opened_ts"
