@@ -187,7 +187,16 @@ export default function Tickets(props) {
 
 		// If we have an agent
 		if(agent !== '0') {
-			oData.memo_id = parseInt(agent, 10);
+
+			// If it's an individual agent
+			if(agent.substr(0,3) === 'id_') {
+				oData.memo_id = parseInt(agent.substr(3), 10);
+			}
+
+			// Else if it's a type of agents
+			else if(agent.substr(0,5) === 'type_') {
+				oData.agent_type = agent.substr(5);
+			}
 		}
 
 		// Fetch the tickets from the server
@@ -288,9 +297,16 @@ export default function Tickets(props) {
 						value={agent}
 					>
 						<option value="0">All</option>
-						{agents.map(o =>
-							<option key={o.memo_id} value={o.memo_id}>{o.firstName + ' ' + o.lastName}</option>
-						)}
+						<optgroup label="By Type">
+							<option value="type_agent">CS Agents</option>
+							<option value="type_pa">Provider Assistants</option>
+							<option value="type_on_hrt">HRT Onboarders</option>
+						</optgroup>
+						<optgroup label="Individual Agents">
+							{agents.map(o =>
+								<option key={o.memo_id} value={'id_' + o.memo_id}>{o.firstName + ' ' + o.lastName}</option>
+							)}
+						</optgroup>
 					</Select>
 				</FormControl>
 				<Button
