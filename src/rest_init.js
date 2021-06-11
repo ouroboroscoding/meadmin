@@ -76,7 +76,7 @@ Rest.init(process.env.REACT_APP_MEMS_DOMAIN, {
 				case 207:
 
 					// Notify the user
-					Events.trigger('error', 'Request to ' + res.error.msg + ' failed. Please contact support');
+					Events.trigger('error', 'Request to ' + res.error.msg + ' failed. An administrator has been notified. Please be patient while we fix the issue.');
 					res._handled = true;
 					break;
 

@@ -96,16 +96,16 @@ function TicketBreakdown(props) {
 }
 
 /**
- * Tickets
+ * Raw
  *
  * Lists all tickets
  *
- * @name Tickets
+ * @name Raw
  * @access public
  * @param Object props Attributes sent to the component
  * @returns React.Component
  */
-export default function Tickets(props) {
+export default function Raw(props) {
 
 	// State
 	let [agent, agentSet] = useState('0');
@@ -219,7 +219,7 @@ export default function Tickets(props) {
 				// Set the tickets
 				ticketsSet(res.data);
 			}
-		})
+		});
 	}
 
 	// Remove a ticket
@@ -253,10 +253,7 @@ export default function Tickets(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="agentTickets" className="page flexGrow">
-			<Box className="page_header">
-				<Typography className="title">Tickets</Typography>
-			</Box>
+		<Box id="agentTickets" className="page" style={{marginTop: '20px'}}>
 			<Box className="filter">
 				<TextField
 					defaultValue={date(dateInc(-14), '-')}
@@ -356,7 +353,7 @@ export default function Tickets(props) {
 }
 
 // Valid props
-Tickets.propTypes = {
+Raw.propTypes = {
 	mobile: PropTypes.bool.isRequired,
 	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }
