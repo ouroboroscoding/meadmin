@@ -14,6 +14,7 @@ import React, { useEffect, useState } from 'react';
 
 // Material UI
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -25,7 +26,7 @@ import Rest from 'shared/communication/rest';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { clone } from 'shared/generic/tools';
+import { clone, omap } from 'shared/generic/tools';
 
 // Constants
 const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -189,7 +190,7 @@ export default function Hours(props) {
 
 		// Fetch the data from the server
 		Rest.read('csr', 'agent/hours', {
-			memo_id: props.memo_id
+			memo_id: props.value.memo_id
 		}).done(res => {
 
 			// If there's an error or warning
@@ -213,7 +214,7 @@ export default function Hours(props) {
 				daysSet(oDays);
 			}
 		});
-	}, [props.memo_id]);
+	}, [props.value.memo_id]);
 
 	// Called when a day's hours change
 	function dayChange(dow, hours) {
@@ -236,6 +237,35 @@ export default function Hours(props) {
 		});
 	}
 
+	// Called to update the hours for the agent
+	function update() {
+
+		// Send the data to the server
+		Rest.update('csr', 'agent/hours', {
+			memo_id: props.value.memo_id,
+			hours: omap(days, (o,k) => ({
+				dow: k,
+				start: o.start,
+				end: o.end
+			}))
+		}).done(res => {
+
+			// If there's an error or warning
+			if(res.error && !res._handled) {
+				Events.trigger('error', Rest.errorMessage(res.error));
+			}
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+				Events.trigger('success', 'Hours saved');
+				props.onClose();
+			}
+		});
+	}
+
 	// Render
 	return (
 		<Box className="agentAccountsHours">
@@ -247,6 +277,10 @@ export default function Hours(props) {
 					value={s in days ? days[s] : null}
 				/>
 			)}
+			<Box className="actions">
+				<Button variant="contained" color="secondary" onClick={props.onClose}>Cancel</Button>
+				<Button variant="contained" color="primary" onClick={update}>Update</Button>
+			</Box>
 		</Box>
 	);
 }
