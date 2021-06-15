@@ -252,7 +252,6 @@ export default function Permissions(props) {
 
 // Force props
 Permissions.propTypes = {
-	agent: PropTypes.string.isRequired,
-	onClose: PropTypes.func.isRequired
+	onClose: PropTypes.func.isRequired,
+	value: PropTypes.object.isRequired
 }
-
