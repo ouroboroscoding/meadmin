@@ -1,3 +1,21 @@
+#agents {
+	.oof_on {
+		color: red;
+	}
+
+	.agentAccountsHours {
+		padding: 20px;
+
+		.agentAccountsHoursDay {
+
+			p.name {
+				padding: 10px;
+				width: 120px;
+			}
+		}
+	}
+}
+
 #agentTickets, #agentGraphs {
 
 	.filter {

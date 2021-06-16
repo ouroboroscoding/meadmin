@@ -22,6 +22,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
+import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -30,10 +31,14 @@ import Typography from '@material-ui/core/Typography';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import HttpsIcon from '@material-ui/icons/Https';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // Composites
-import Permissions from './Accounts_Permissions';
+import Hours from './Hours';
+import Permissions from './Permissions';
 
 // Format Components
 import { Form, Results } from 'shared/components/Format';
@@ -44,7 +49,7 @@ import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { afindi, clone } from 'shared/generic/tools';
+import { afindi, clone, sortByKey } from 'shared/generic/tools';
 
 // Agent Definition
 import AgentDef from 'definitions/csr/agent_memo';
@@ -67,10 +72,12 @@ export default function Agents(props) {
 	let [agents, agentsSet] = useState(null);
 	let [create, createSet] = useState(false);
 	let [memo, memoSet] = useState(false);
+	let [oof, oofSet] = useState(false);
 	let [password, passwordSet] = useState(false);
 
 	// Refs
 	let memoRef = useRef();
+	let oofRef = useRef();
 	let passwdRef = useRef();
 
 	// Effects
@@ -157,6 +164,7 @@ export default function Agents(props) {
 		}
 	}
 
+	// Called to create a new agent from an existing Memo user
 	function memoImport() {
 
 		// Store the username
@@ -188,6 +196,98 @@ export default function Agents(props) {
 		});
 	}
 
+	// Called when the oof action is clicked in the results row
+	function oofAction(agent) {
+
+		// Look the agent
+		let iIndex = afindi(agents, '_id', agent._id);
+
+		// If we have the agent
+		if(iIndex > -1) {
+
+			// If they're already in oof, turn it off
+			if(agents[iIndex].oof) {
+				oofUpdate(null, agents[iIndex]._id);
+			}
+
+			// Else, show the dialog
+			else {
+				oofSet(agent._id);
+			}
+		}
+	}
+
+	// Called to return the action data for the user in the Results
+	function oofActionData(agent) {
+		return {
+			tooltip: agent.oof ? 'Remove Out Of Office' : 'Set Out Of Office',
+			icon: agent.oof ? VisibilityOffIcon : VisibilityIcon,
+			className: agent.oof ? 'oof_on' : 'oof_off'
+		}
+	}
+
+	// Called to set the Out of Office replacement for the user
+	function oofUpdate(ev, _id=null) {
+
+		// Init the request data
+		let oData = null;
+
+		// If we got an ID we're turning it off
+		if(_id) {
+			oData = {
+				_id: _id,
+				oof: 0,
+				oof_replacement: 0
+			};
+		}
+
+		// Else, we're setting the replacement
+		else {
+			oData = {
+				_id: oof,
+				oof: 1,
+				oof_replacement: oofRef.current.value
+			}
+		}
+
+		// Send the request to the server
+		Rest.update('csr', 'agent', oData).done(res => {
+
+			// If there's an error or warning
+			if(res.error && !res._handled) {
+				Events.trigger('error', Rest.errorMessage(res.error));
+			}
+			if(res.warning) {
+				Events.trigger('warning', JSON.stringify(res.warning));
+			}
+
+			// If there's data
+			if(res.data) {
+
+				// Hide the dialog
+				oofSet(false);
+
+				// Update the agents
+				agentsSet(agents => {
+
+					// Find the record
+					let iIndex = afindi(agents, '_id', oData._id);
+
+					// If we didn't find the agent
+					if(iIndex === -1) {
+						return agents;
+					}
+
+					// Update and return a clone
+					agents[iIndex].oof = oData.oof;
+					agents[iIndex].oof_replacement = oData.oof_replacement;
+					return clone(agents);
+				});
+			}
+		});
+	}
+
+	// Called to update the password for the user
 	function passwordUpdate() {
 
 		// Update the agent's password
@@ -254,10 +354,12 @@ export default function Agents(props) {
 				<Box>Loading...</Box>
 			:
 				<Results
-					actions={[
+					actions={Rights.has('csr_agents', 'update') ? [
+						{dynamic: oofActionData, callback: oofAction},
+						{tooltip: "Edit Agent's Office Hours", icon: QueryBuilderIcon, component: Hours},
 						{tooltip: "Edit Agent's permissions", icon: HttpsIcon, component: Permissions},
 						{tooltip: "Change Agent's password", icon: VpnKeyIcon, callback: agent => passwordSet(agent._id)}
-					]}
+					] : null}
 					data={agents}
 					errors={{
 						1501: "Username already in use",
@@ -269,30 +371,6 @@ export default function Agents(props) {
 					tree={AgentTree}
 					update={Rights.has('csr_agents', 'update') ? agentUpdate : false}
 				/>
-			}
-			{password &&
-				<Dialog
-					aria-labelledby="confirmation-dialog-title"
-					maxWidth="lg"
-					onClose={ev => passwordSet(false)}
-					open={true}
-				>
-					<DialogTitle id="confirmation-dialog-title">Update Password</DialogTitle>
-					<DialogContent dividers>
-						<TextField
-							label="New Password"
-							inputRef={passwdRef}
-						/>
-					</DialogContent>
-					<DialogActions>
-						<Button variant="contained" color="secondary" onClick={ev => passwordSet(false)}>
-							Cancel
-						</Button>
-						<Button variant="contained" color="primary" onClick={passwordUpdate}>
-							Update
-						</Button>
-					</DialogActions>
-				</Dialog>
 			}
 			{memo &&
 				<Dialog
@@ -314,6 +392,62 @@ export default function Agents(props) {
 						</Button>
 						<Button variant="contained" color="primary" onClick={memoImport}>
 							Import User
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+			{oof &&
+				<Dialog
+					aria-labelledby="oof-dialog-title"
+					maxWidth="md"
+					onClose={ev => oofSet(false)}
+					open={true}
+				>
+					<DialogTitle id="oof-dialog-title">Set Out of Office</DialogTitle>
+					<DialogContent dividers>
+						<Typography>Please select another agent to handle customers</Typography>
+						<Box className="field">
+							<Select
+								inputRef={oofRef}
+								native
+								variant="outlined"
+							>
+								{agents.sort(sortByKey('firstName')).map((o,i) =>
+									<option key={i} value={o.memo_id}>{o.firstName} {o.lastName}</option>
+								)}
+							</Select>
+						</Box>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={ev => oofSet(false)}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={oofUpdate}>
+							Set Replacement
+						</Button>
+					</DialogActions>
+				</Dialog>
+			}
+			{password &&
+				<Dialog
+					aria-labelledby="password-dialog-title"
+					maxWidth="lg"
+					onClose={ev => passwordSet(false)}
+					open={true}
+				>
+					<DialogTitle id="password-dialog-title">Update Password</DialogTitle>
+					<DialogContent dividers>
+						<TextField
+							label="New Password"
+							inputRef={passwdRef}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" color="secondary" onClick={ev => passwordSet(false)}>
+							Cancel
+						</Button>
+						<Button variant="contained" color="primary" onClick={passwordUpdate}>
+							Update
 						</Button>
 					</DialogActions>
 				</Dialog>
