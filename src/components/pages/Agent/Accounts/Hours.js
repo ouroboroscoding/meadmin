@@ -70,9 +70,19 @@ function Time(props) {
 			period: 'AM'
 		}
 
-		// If the hour is more than 12
-		if(lTime[0] > 12) {
-			oState.hour -= 12;
+		// If the hour is 0
+		if(oState.hour === 0) {
+			oState.hour = 12;
+		}
+
+		// If the hour is more than 12, subract 12
+		else if(oState.hour === 12) {
+			oState.period = 'PM';
+		}
+
+		// Else if it's over 12
+		else if(oState.hour > 12) {
+			oState.hour -= 12
 			oState.period = 'PM';
 		}
 
@@ -88,12 +98,12 @@ function Time(props) {
 		let lTime = ['', state.minutes, '00']
 
 		// If we're in PM and 1 or more
-		if(state.period === 'PM' && lTime[0] !== 12) {
+		if(state.period === 'PM' && state.hour !== 12) {
 			lTime[0] = (state.hour + 12).toString();
 		}
 
 		// If we're in AM and 12
-		else if(state.period === 'AM' && lTime[0] === 12) {
+		else if(state.period === 'AM' && state.hour === 12) {
 			lTime[0] = '00';
 		}
 
@@ -278,8 +288,6 @@ function Day(props) {
 		// Let the parent know
 		props.onChange(props.dow, oValue);
 	}
-
-	console.log(props);
 
 	// Render
 	return (
