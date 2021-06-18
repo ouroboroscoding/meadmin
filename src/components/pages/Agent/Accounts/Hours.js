@@ -87,9 +87,14 @@ function Time(props) {
 		// Init the parts
 		let lTime = ['', state.minutes, '00']
 
-		// If we're in PM
-		if(state.period === 'PM') {
+		// If we're in PM and 1 or more
+		if(state.period === 'PM' && lTime[0] !== 12) {
 			lTime[0] = (state.hour + 12).toString();
+		}
+
+		// If we're in AM and 12
+		else if(state.period === 'AM' && lTime[0] === 12) {
+			lTime[0] = '00';
 		}
 
 		// Else, if the time is less then 10
