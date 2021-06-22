@@ -40,7 +40,7 @@ import Rights from 'shared/communication/rights';
 
 // Shared generic modules
 import Events from 'shared/generic/events';
-import { afindi, clone, date, dateInc, omap, sortByKey } from 'shared/generic/tools';
+import { afindi, clone, date, omap, sortByKey } from 'shared/generic/tools';
 
 // Ticket Definition
 import TicketDef from 'definitions/csr/ticket_with_state';
@@ -256,7 +256,7 @@ export default function Raw(props) {
 		<Box id="agentTickets" className="page" style={{marginTop: '20px'}}>
 			<Box className="filter">
 				<TextField
-					defaultValue={date(dateInc(-14), '-')}
+					defaultValue={sToday}
 					inputRef={refStart}
 					inputProps={{
 						min: '2021-05-01',
