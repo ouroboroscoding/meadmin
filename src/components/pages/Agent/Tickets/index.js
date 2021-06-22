@@ -19,8 +19,9 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
 // Stats components
-import Raw from './Raw';
 import Graph from './Graph';
+import Raw from './Raw';
+import Totals from './Totals';
 
 /**
  * Tickets
@@ -49,14 +50,18 @@ export default function Tickets(props) {
 					value={tab}
 					variant="fullWidth"
 				>
+					<Tab label="Totals" />
 					<Tab label="Raw" />
 					<Tab label="Graph" />
 				</Tabs>
 			</AppBar>
 			<Box style={{display: tab === 0 ? 'block' : 'none'}}>
-				<Raw {...props} />
+				<Totals {...props} />
 			</Box>
 			<Box style={{display: tab === 1 ? 'block' : 'none'}}>
+				<Raw {...props} />
+			</Box>
+			<Box style={{display: tab === 2 ? 'block' : 'none'}}>
 				<Graph {...props} />
 			</Box>
 		</Box>
