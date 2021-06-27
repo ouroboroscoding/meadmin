@@ -33,28 +33,43 @@ import Events from 'shared/generic/events';
 import { date } from 'shared/generic/tools';
 
 // Generate the ticket Tree
-const OpenedTree = new Tree({
-	__name__: 'OpenedTickets',
-	name: {__type__: 'string'},
-	"Call": {__type__: 'uint'},
-	"Follow_Up": {__type__: 'uint'},
-	"Provider": {__type__: 'uint'},
-	"Script_Entry": {__type__: 'uint'},
-	"SMS___Voicemail": {__type__: 'uint', __react__: {title: 'SMS / Voicemail'}}
-});
-const ResolvedTree = new Tree({
-	__name__: 'ResolvedTickets',
-	name: {__type__: 'string'},
-	"Contact_Attempted": {__type__: 'uint'},
-	"Follow_Up_Complete": {__type__: 'uint'},
-	"Information_Provided": {__type__: 'uint'},
-	"Issue_Resolved": {__type__: 'uint'},
-	"Provider_Confirmed Prescription": {__type__: 'uint'},
-	"QA_Order_Declined": {__type__: 'uint'},
-	"Recurring_Purchase_Canceled": {__type__: 'uint'},
-	"Script_Entered": {__type__: 'uint'},
-	"Invalid_Transfer: No Purchase Information": {__type__: 'uint'}
-});
+const Trees = {
+	actions: new Tree({
+		__name__: 'TicketActions',
+		name: {__type__: 'string'},
+		"transfer": {__type__: 'uint', __react__: {title: 'Transfers'}},
+		"escalate": {__type__: 'uint', __react__: {title: 'Escalations'}}
+	}),
+	items: new Tree({
+		__name__: 'TicketItems',
+		name: {__type__: 'string'},
+		"jc_call": {__type__: 'uint', __react__: {title: 'Calls'}},
+		"note": {__type__: 'uint', __react__: {title: 'Notes'}},
+		"sms": {__type__: 'uint', __react__: {title: 'SMS'}}
+	}),
+	opened: new Tree({
+		__name__: 'TicketOpened',
+		name: {__type__: 'string'},
+		"Call": {__type__: 'uint'},
+		"Follow_Up": {__type__: 'uint'},
+		"Provider": {__type__: 'uint'},
+		"Script_Entry": {__type__: 'uint'},
+		"SMS___Voicemail": {__type__: 'uint', __react__: {title: 'SMS / Voicemail'}}
+	}),
+	resolved: new Tree({
+	__name__: 'TicketResolved',
+		name: {__type__: 'string'},
+		"Contact_Attempted": {__type__: 'uint'},
+		"Follow_Up_Complete": {__type__: 'uint'},
+		"Information_Provided": {__type__: 'uint'},
+		"Issue_Resolved": {__type__: 'uint'},
+		"Provider_Confirmed Prescription": {__type__: 'uint'},
+		"QA_Order_Declined": {__type__: 'uint'},
+		"Recurring_Purchase_Canceled": {__type__: 'uint'},
+		"Script_Entered": {__type__: 'uint'},
+		"Invalid_Transfer: No Purchase Information": {__type__: 'uint'}
+	})
+}
 
 /**
  * Totals
@@ -184,6 +199,7 @@ export default function Totals(props) {
 					>
 						<option value="opened">Opened</option>
 						<option value="resolved">Resolved</option>
+						<option value="items">Items (Calls/SMS/Notes)</option>
 					</Select>
 				</FormControl>
 				<Typography>&nbsp;</Typography>
@@ -222,7 +238,7 @@ export default function Totals(props) {
 							remove={false}
 							service=""
 							totals={true}
-							tree={counts.type === 'opened' ? OpenedTree : ResolvedTree}
+							tree={Trees[counts.type]}
 							update={false}
 						/>
 					}
