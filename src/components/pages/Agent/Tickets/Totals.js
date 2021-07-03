@@ -67,7 +67,7 @@ const Trees = {
 		"QA_Order_Declined": {__type__: 'uint'},
 		"Recurring_Purchase_Canceled": {__type__: 'uint'},
 		"Script_Entered": {__type__: 'uint'},
-		"Invalid_Transfer: No Purchase Information": {__type__: 'uint'}
+		"Invalid_Transfer:_No_Purchase_Information": {__type__: 'uint'}
 	})
 }
 
