@@ -39,6 +39,7 @@ import ProviderClaims from './pages/Provider/Claims';
 import ProviderPending from './pages/Provider/Pending';
 import ProviderStats from './pages/Provider/Stats';
 import ReportRecipients from './pages/ReportRecipients';
+import SMSTemplates from './pages/SMSTemplates';
 import Users from './pages/Users';
 
 // CSS
@@ -68,7 +69,7 @@ export default function Site(props) {
 	return (
 		<SnackbarProvider maxSnack={3}>
 			<Alerts />
-			<div id="site">
+			<div id="site" className="flexRows">
 				<Header
 					mobile={mobile}
 					user={user}
@@ -76,7 +77,7 @@ export default function Site(props) {
 				{user === false ?
 					<SignIn />
 				:
-					<div id="content">
+					<div id="content" className="flexGrow flexRows">
 						<Switch>
 							<Route exact path="/agent/accounts">
 								<AgentAccounts
@@ -152,6 +153,12 @@ export default function Site(props) {
 							</Route>
 							<Route exact path="/reports">
 								<ReportRecipients
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/smstemplates">
+								<SMSTemplates
 									mobile={mobile}
 									user={user}
 								/>

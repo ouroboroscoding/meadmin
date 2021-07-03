@@ -71,7 +71,8 @@ const TYPES = [
 	]},
 	{title: "Memo", rights: [
 		{name: "memo_mips", title: "MIP", allowed: READ | UPDATE},
-		{name: "memo_notes", title: "Notes", allowed: READ | CREATE}
+		{name: "memo_notes", title: "Notes", allowed: READ | CREATE},
+		{name: "sms_workflow", title: "SMS Workflow Templates", allowed: READ | UPDATE}
 	]},
 	{title: "Pharmacy", rights: [
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
