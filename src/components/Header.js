@@ -74,6 +74,7 @@ const _NO_RIGHTS = {
 	providers: false,
 	report_recipients: false,
 	rx_product: false,
+	sms_workflow: false,
 	user: false
 }
 
@@ -98,6 +99,7 @@ export default function Header(props) {
 			prov_overwrite: Rights.has('prov_overwrite', 'read'),
 			report_recipients: Rights.has('report_recipients', 'read'),
 			rx_product: Rights.has('rx_product', 'read'),
+			sms_workflow: Rights.has('sms_workflow', 'read'),
 			user: Rights.has('user', 'read')
 		} : _NO_RIGHTS);
 	}, [props.user])
@@ -352,6 +354,14 @@ export default function Header(props) {
 								</List>
 							</Collapse>
 						</React.Fragment>
+					}
+					{rights.sms_workflow &&
+						<Link to="/smstemplates" onClick={menuToggle}>
+							<ListItem button>
+								<ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
+								<ListItemText primary="SMS Templates" />
+							</ListItem>
+						</Link>
 					}
 					{rights.user &&
 						<Link to="/users" onClick={menuToggle}>
