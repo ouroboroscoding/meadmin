@@ -114,7 +114,7 @@ export default function Header(props) {
 			Rest.read('monolith', 'reviews/average', {}).done(res => {
 
 				// Set the colour
-				let sColor = 'green';
+				let sColor = '#fff';
 				if(res.data < 6.0) {
 					sColor = 'red';
 				} else if(res.data < 8.0) {
@@ -202,7 +202,7 @@ export default function Header(props) {
 				</Box>
 				{props.user &&
 					<React.Fragment>
-						<Typography className="title" style={{color: reviewAvg[1]}}>{reviewAvg[0].toFixed(3)}</Typography>
+						<Typography className="title" style={{color: reviewAvg[1]}}>{reviewAvg[0].toFixed(2)}</Typography>
 						<Tooltip title="Account">
 							<IconButton onClick={ev => accountSet(b => !b)}>
 								<PermIdentityIcon />
