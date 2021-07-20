@@ -9,6 +9,7 @@
  */
 
 // NPM modules
+import Decimal from 'decimal.js';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -83,25 +84,52 @@ export default function Header(props) {
 
 	// State
 	let [account, accountSet] = useState(false);
+	let [reviewAvg, reviewAvgSet] = useState([0.0, '#fff']);
 	let [menu, menuSet] = useState(false);
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
 	let [subs, subsSet] = useState(safeLocalStorageJSON('submenu', {}))
 
 	// User effect
 	useEffect(() => {
-		rightsSet(props.user ? {
-			calendly_admin: Rights.has('calendly_admin', 'read'),
-			csr_agents: Rights.has('csr_agents', 'read'),
-			csr_overwrite: Rights.has('csr_overwrite', 'read'),
-			documentation: Rights.has('documentation', 'update'),
-			link: Rights.has('link', 'read'),
-			providers: Rights.has('providers', 'read'),
-			prov_overwrite: Rights.has('prov_overwrite', 'read'),
-			report_recipients: Rights.has('report_recipients', 'read'),
-			rx_product: Rights.has('rx_product', 'read'),
-			sms_workflow: Rights.has('sms_workflow', 'read'),
-			user: Rights.has('user', 'read')
-		} : _NO_RIGHTS);
+
+		// If we have a user
+		if(props.user) {
+
+			// Set the rights
+			rightsSet({
+				calendly_admin: Rights.has('calendly_admin', 'read'),
+				csr_agents: Rights.has('csr_agents', 'read'),
+				csr_overwrite: Rights.has('csr_overwrite', 'read'),
+				documentation: Rights.has('documentation', 'update'),
+				link: Rights.has('link', 'read'),
+				providers: Rights.has('providers', 'read'),
+				prov_overwrite: Rights.has('prov_overwrite', 'read'),
+				report_recipients: Rights.has('report_recipients', 'read'),
+				rx_product: Rights.has('rx_product', 'read'),
+				sms_workflow: Rights.has('sms_workflow', 'read'),
+				user: Rights.has('user', 'read')
+			});
+
+			// Fetch the review average
+			Rest.read('monolith', 'reviews/average', {}).done(res => {
+
+				// Set the colour
+				let sColor = 'green';
+				if(res.data < 6.0) {
+					sColor = 'red';
+				} else if(res.data < 8.0) {
+					sColor = '#ffca00';
+				}
+
+				// Set the average
+				reviewAvgSet([new Decimal(res.data), sColor]);
+			});
+
+		} else {
+			rightsSet(_NO_RIGHTS);
+			reviewAvgSet([0.0, '#fff']);
+		}
+
 	}, [props.user])
 
 	// Show/Hide menu
@@ -174,6 +202,7 @@ export default function Header(props) {
 				</Box>
 				{props.user &&
 					<React.Fragment>
+						<Typography className="title" style={{color: reviewAvg[1]}}>{reviewAvg[0].toFixed(3)}</Typography>
 						<Tooltip title="Account">
 							<IconButton onClick={ev => accountSet(b => !b)}>
 								<PermIdentityIcon />
