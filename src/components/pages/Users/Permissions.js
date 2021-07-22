@@ -37,8 +37,10 @@ const TYPES = [
 		{name: "calendly_admin", title: "Events", allowed: ALL}
 	]},
 	{title: "CRM", rights: [
+		{name: "campaigns", title: "Campaigns", allowed: CREATE | READ | UPDATE},
 		{name: "customers", title: "Customers", allowed: CREATE | READ | UPDATE},
-		{name: "orders", title: "Orders", allowed: CREATE | READ | UPDATE}
+		{name: "orders", title: "Orders", allowed: CREATE | READ | UPDATE},
+		{name: "products", title: "Products", allowed: ALL}
 	]},
 	{title: "Customer Support", rights: [
 		{name: "csr_agents", title: "Agents", allowed: ALL},
