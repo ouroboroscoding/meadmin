@@ -50,8 +50,10 @@ const TYPES = [
 		{name: "everify", title: "E-Verification", allowed: READ | UPDATE}
 	]},
 	{title: "CRM", rights: [
+		{name: "campaigns", title: "Campaigns", allowed: READ},
 		{name: "customers", title: "Customers", allowed: READ | UPDATE},
-		{name: "orders", title: "Orders", allowed: CREATE | READ | UPDATE}
+		{name: "orders", title: "Orders", allowed: CREATE | READ | UPDATE},
+		{name: "products", title: "Products", allowed: READ}
 	]},
 	{title: "Patient Portal", rights: [
 		{name: "patient_account", title: "Account", allowed: CREATE | READ | UPDATE}
