@@ -45,6 +45,7 @@ const Trees = {
 		name: {__type__: 'string'},
 		"jc_call": {__type__: 'uint', __react__: {title: 'Calls'}},
 		"note": {__type__: 'uint', __react__: {title: 'Notes'}},
+		"order": {__type__: 'uint', __react__: {title: 'Orders'}},
 		"sms": {__type__: 'uint', __react__: {title: 'SMS'}}
 	}),
 	opened: new Tree({

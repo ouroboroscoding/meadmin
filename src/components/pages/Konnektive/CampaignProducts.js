@@ -1,11 +1,11 @@
 /**
- * Pharmacy Products
+ * Campaign Products
  *
- * Page to manage products and their NDCs by pharmacy
+ * Page to manage konnektive products by campaign
  *
  * @author Chris Nasr <bast@maleexcel.com>
  * @copyright MaleExcelMedical
- * @created 2021-01-05
+ * @created 2021-07-22
  */
 
 // NPM modules
@@ -35,32 +35,32 @@ import Rights from 'shared/communication/rights';
 import Events from 'shared/generic/events';
 import { afindi, clone } from 'shared/generic/tools';
 
-// Agent Definition
-import ProductDef from 'definitions/prescriptions/product';
-ProductDef['pharmacy']['__react__']['options'] = new SelectData('prescriptions', 'pharmacies', 'pharmacyId', 'name');
+// CampaignProduct Definition
+import CampaignProductDef from 'definitions/konnektive/campaign_product';
+CampaignProductDef['campaign_id']['__react__'] = {options: new SelectData('konnektive', 'campaigns', '_id', 'name')}
 
-// Generate the agent Tree
-const ProductTree = new Tree(ProductDef);
+// Generate the CampaignProduct Tree
+const CampaignProductTree = new Tree(CampaignProductDef);
 
 // Default set of rights when no user
 const _NO_RIGHTS = {
 	create: false,
 	delete: false,
-	update: false,
-	pharmacy: false
+	read: false,
+	update: false
 }
 
 /**
- * Products
+ * CampaignProducts
  *
- * Lists all products available to the signed in user
+ * Lists all products in a specific campaign
  *
- * @name Products
+ * @name CampaignProducts
  * @access public
  * @param Object props Attributes sent to the component
  * @returns React.Component
  */
-export default function Products(props) {
+export default function CampaignProducts(props) {
 
 	// State
 	let [create, createSet] = useState(false);
@@ -69,22 +69,15 @@ export default function Products(props) {
 
 	// Effects
 	useEffect(() => {
-
-		// If we have a user
-		if(props.user) {
-			productsFetch();
-			rightsSet({
-				create: Rights.has('rx_product', 'create'),
-				delete: Rights.has('rx_product', 'delete'),
-				update: Rights.has('rx_product', 'update'),
-				pharmacy: Rights.idents('rx_product')
-			})
-		} else {
-			productsSet(null);
-			rightsSet(_NO_RIGHTS);
-		}
+		productsFetch();
+		rightsSet({
+				create: Rights.has('products', 'create'),
+				delete: Rights.has('products', 'delete'),
+				read: Rights.has('products', 'read'),
+				update: Rights.has('products', 'update')
+		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.user]); // React to user changes
+	}, []); // React to user changes
 
 	// Add the created product to the list
 	function productCreated(product) {
@@ -132,7 +125,9 @@ export default function Products(props) {
 	function productsFetch() {
 
 		// Fetch all products
-		Rest.read('prescriptions', 'products', {}).done(res => {
+		Rest.read('konnektive', 'campaign/products', {
+			campaign_id: props.value._id
+		}).done(res => {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
@@ -175,9 +170,9 @@ export default function Products(props) {
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyProducts" className="page flexGrow">
+		<Box id="konnektiveProducts" className="page flexGrow">
 			<Box className="page_header">
-				<Typography className="title">Products to NDCs</Typography>
+				<Typography className="title">Campaign Products</Typography>
 				{rights.create &&
 					<Tooltip title="Create new Product">
 						<IconButton onClick={ev => createSet(b => !b)}>
@@ -189,15 +184,16 @@ export default function Products(props) {
 			{create &&
 				<Paper className="padded">
 					<Form
-						cancel={ev => createSet(false)}
-						noun="product"
-						service="prescriptions"
-						success={productCreated}
-						tree={ProductTree}
-						type="create"
-						value={{
-							pharmacy: rights.pharmacy ? rights.pharmacy[0] : ''
+						beforeSubmit={value => {
+							value.campaign_id = props.value._id;
+							return value;
 						}}
+						cancel={ev => createSet(false)}
+						noun="campaign/product"
+						service="konnektive"
+						success={productCreated}
+						tree={CampaignProductTree}
+						type="create"
 					/>
 				</Paper>
 			}
@@ -206,11 +202,11 @@ export default function Products(props) {
 			:
 				<Results
 					data={products}
-					noun="product"
+					noun="campaign/product"
 					orderBy="key"
 					remove={rights.delete ? productRemove : false}
-					service="prescriptions"
-					tree={ProductTree}
+					service="konnektive"
+					tree={CampaignProductTree}
 					update={rights.update ? productUpdate : false}
 				/>
 			}
@@ -219,7 +215,8 @@ export default function Products(props) {
 }
 
 // Valid props
-Products.propTypes = {
+CampaignProducts.propTypes = {
 	mobile: PropTypes.bool.isRequired,
-	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
+	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
+	value: PropTypes.object.isRequired
 }

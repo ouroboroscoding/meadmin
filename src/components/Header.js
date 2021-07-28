@@ -30,6 +30,7 @@ import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DescriptionIcon from '@material-ui/icons/Description';
 import EmailIcon from '@material-ui/icons/Email';
@@ -47,6 +48,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PeopleIcon from '@material-ui/icons/People';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 import TodayIcon from '@material-ui/icons/Today';
 
@@ -62,9 +64,6 @@ import Rights from 'shared/communication/rights';
 import Events from 'shared/generic/events';
 import { clone, safeLocalStorageJSON } from 'shared/generic/tools';
 
-// Local modules
-import Utils from 'utils';
-
 // No Rights
 const _NO_RIGHTS = {
 	calendly_admin: false,
@@ -72,6 +71,7 @@ const _NO_RIGHTS = {
 	csr_overwrite: false,
 	documentation: false,
 	link: false,
+	konnektive: false,
 	providers: false,
 	report_recipients: false,
 	rx_product: false,
@@ -102,6 +102,7 @@ export default function Header(props) {
 				csr_overwrite: Rights.has('csr_overwrite', 'read'),
 				documentation: Rights.has('documentation', 'update'),
 				link: Rights.has('link', 'read'),
+				konnektive: Rights.has('campaigns', 'read'),
 				providers: Rights.has('providers', 'read'),
 				prov_overwrite: Rights.has('prov_overwrite', 'read'),
 				report_recipients: Rights.has('report_recipients', 'read'),
@@ -144,7 +145,7 @@ export default function Header(props) {
 		Rest.create('auth', 'signout', {}).done(res => {
 
 			// If there's an error
-			if(res.error && !Utils.serviceError(res.error)) {
+			if(res.error && !res._handled) {
 				Events.trigger('error', Rest.errorMessage(res.error));
 			}
 
@@ -286,6 +287,25 @@ export default function Header(props) {
 								<ListItemText primary="Links" />
 							</ListItem>
 						</Link>
+					}
+					{rights.konnektive &&
+						<React.Fragment>
+							<ListItem button key="Konnektive" onClick={ev => subMenuToggle('konnektive')}>
+								<ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+								<ListItemText primary="Konnektive" />
+								{subs.konnektive ? <ExpandLess /> : <ExpandMore />}
+							</ListItem>
+							<Collapse in={subs.konnektive || false} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									<Link to="/konnektive/campaigns" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><AssignmentIcon /></ListItemIcon>
+											<ListItemText primary="Campaigns" />
+										</ListItem>
+									</Link>
+								</List>
+							</Collapse>
+						</React.Fragment>
 					}
 					{rights.rx_product &&
 						<React.Fragment>
