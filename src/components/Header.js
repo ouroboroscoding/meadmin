@@ -29,11 +29,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
+import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import DescriptionIcon from '@material-ui/icons/Description';
+import DialpadIcon from '@material-ui/icons/Dialpad';
 import EmailIcon from '@material-ui/icons/Email';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
 import ErrorIcon from '@material-ui/icons/Error';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import EventIcon from '@material-ui/icons/Event';
@@ -48,6 +51,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import PeopleIcon from '@material-ui/icons/People';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import PhoneIcon from '@material-ui/icons/Phone';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 import TodayIcon from '@material-ui/icons/Today';
@@ -72,8 +76,11 @@ const _NO_RIGHTS = {
 	documentation: false,
 	link: false,
 	konnektive: false,
+	justcall: false,
 	providers: false,
 	report_recipients: false,
+	rx_diagnosis: false,
+	rx_hrt_order: false,
 	rx_product: false,
 	sms_workflow: false,
 	user: false
@@ -103,9 +110,12 @@ export default function Header(props) {
 				documentation: Rights.has('documentation', 'update'),
 				link: Rights.has('link', 'read'),
 				konnektive: Rights.has('campaigns', 'read'),
+				justcall: Rights.has('justcall', 'read'),
 				providers: Rights.has('providers', 'read'),
 				prov_overwrite: Rights.has('prov_overwrite', 'read'),
 				report_recipients: Rights.has('report_recipients', 'read'),
+				rx_diagnosis: Rights.has('rx_diagnosis', 'read'),
+				rx_hrt_order: Rights.has('rx_hrt_order', 'read'),
 				rx_product: Rights.has('rx_product', 'read'),
 				sms_workflow: Rights.has('sms_workflow', 'read'),
 				user: Rights.has('user', 'read')
@@ -249,6 +259,12 @@ export default function Header(props) {
 													<ListItemText primary="Claims" />
 												</ListItem>
 											</Link>
+											<Link to="/agent/stats" onClick={menuToggle}>
+												<ListItem button>
+													<ListItemIcon><EqualizerIcon /></ListItemIcon>
+													<ListItemText primary="Stats" />
+												</ListItem>
+											</Link>
 											<Link to="/agent/tickets" onClick={menuToggle}>
 												<ListItem button>
 													<ListItemIcon><ConfirmationNumberIcon /></ListItemIcon>
@@ -307,7 +323,26 @@ export default function Header(props) {
 							</Collapse>
 						</React.Fragment>
 					}
-					{rights.rx_product &&
+					{rights.justcall &&
+						<React.Fragment>
+							<ListItem button key="JustCall" onClick={ev => subMenuToggle('justcall')}>
+								<ListItemIcon><PhoneIcon /></ListItemIcon>
+								<ListItemText primary="JustCall" />
+								{subs.justcall ? <ExpandLess /> : <ExpandMore />}
+							</ListItem>
+							<Collapse in={subs.justcall || false} timeout="auto" unmountOnExit>
+								<List component="div" className="submenu">
+									<Link to="/justcall/queue_numbers" onClick={menuToggle}>
+										<ListItem button>
+											<ListItemIcon><DialpadIcon /></ListItemIcon>
+											<ListItemText primary="Queue Numbers" />
+										</ListItem>
+									</Link>
+								</List>
+							</Collapse>
+						</React.Fragment>
+					}
+					{(rights.rx_diagnosis || rights.rx_product || rights.rx_hrt_order) &&
 						<React.Fragment>
 							<ListItem button key="Pharmacy" onClick={ev => subMenuToggle('pharmacy')}>
 								<ListItemIcon><LocalPharmacyIcon /></ListItemIcon>
@@ -316,19 +351,37 @@ export default function Header(props) {
 							</ListItem>
 							<Collapse in={subs.pharmacy || false} timeout="auto" unmountOnExit>
 								<List component="div" className="submenu">
-									<Link to="/pharmacy/products" onClick={menuToggle}>
-										<ListItem button>
-											<ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
-											<ListItemText primary="Product to NDC" />
-										</ListItem>
-									</Link>
+									{rights.rx_diagnosis &&
+										<Link to="/pharmacy/diagnosis" onClick={menuToggle}>
+											<ListItem button>
+												<ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
+												<ListItemText primary="Diagnosis - ICD to DoseSpot" />
+											</ListItem>
+										</Link>
+									}
+									{rights.rx_hrt_order &&
+										<Link to="/pharmacy/hrt/orders" onClick={menuToggle}>
+											<ListItem button>
+												<ListItemIcon><AccessibilityNewIcon /></ListItemIcon>
+												<ListItemText primary="HRT to RX" />
+											</ListItem>
+										</Link>
+									}
+									{rights.rx_product &&
+										<Link to="/pharmacy/products" onClick={menuToggle}>
+											<ListItem button>
+												<ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
+												<ListItemText primary="Product to NDC" />
+											</ListItem>
+										</Link>
+									}
 								</List>
 							</Collapse>
 						</React.Fragment>
 					}
 					{rights.providers &&
 						<React.Fragment>
-							<ListItem button key="Pharmacy" onClick={ev => subMenuToggle('provider')}>
+							<ListItem button key="Providers" onClick={ev => subMenuToggle('provider')}>
 								<ListItemIcon><LocalHospitalIcon /></ListItemIcon>
 								<ListItemText primary="Providers" />
 								{subs.provider ? <ExpandLess /> : <ExpandMore />}

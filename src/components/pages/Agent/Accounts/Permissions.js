@@ -47,7 +47,8 @@ const TYPES = [
 		{name: "csr_stats", title: "Stats: Allowed to view stats", allowed: READ},
 		{name: "justcall", title: "JustCall", allowed: READ},
 		{name: "hubspot", title: "HubSpot", allowed: READ},
-		{name: "everify", title: "E-Verification", allowed: READ | UPDATE}
+		{name: "everify", title: "E-Verification", allowed: READ | UPDATE},
+		{name: "csr_leads", title: "Leads", allowed: READ}
 	]},
 	{title: "CRM", rights: [
 		{name: "campaigns", title: "Campaigns", allowed: READ},
@@ -65,6 +66,9 @@ const TYPES = [
 	{title: "Pharmacy", rights: [
 		{name: "prescriptions", title: "Prescriptions", allowed: CREATE | READ | UPDATE},
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
+		{name: "rx_diagnosis", title: "ICD to DoseSpot Diagnosis", allowed: READ},
+		{name: "rx_hrt_order", title: "HRT Prescriptions", allowed: READ | UPDATE},
+		{name: "rx_products", title: "DoseSpot medications", allowed: READ},
 		{name: "welldyne_adhoc", title: "Adhoc", allowed: CREATE | READ | DELETE},
 		{name: "welldyne_never_started", title: "Never Started", allowed: READ | UPDATE | DELETE},
 		{name: "welldyne_outbound", title: "Outbound Failed", allowed: READ | UPDATE}

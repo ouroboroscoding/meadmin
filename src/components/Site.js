@@ -28,12 +28,16 @@ import SignIn from './SignIn';
 // Page component modules
 import AgentAccounts from './pages/Agent/Accounts';
 import AgentClaims from './pages/Agent/Claims';
+import AgentStats from './pages/Agent/Stats';
 import AgentTickets from './pages/Agent/Tickets';
 import CalendlyEvents from './pages/Calendly/Events';
 import DocsServices from './pages/Documentation/Services';
 import DocsErrors from './pages/Documentation/Errors';
 import Links from './pages/Links';
+import JustCallQueueNumbers from './pages/JustCall/QueueNumbers';
 import KonnektiveCampaigns from './pages/Konnektive/Campaigns';
+import PharmacyDiagnosis from './pages/Pharmacy/Diagnosis';
+import PharmacyHrtOrders from './pages/Pharmacy/HrtOrders';
 import PharmacyProducts from './pages/Pharmacy/Products';
 import ProviderAccounts from './pages/Provider/Accounts';
 import ProviderClaims from './pages/Provider/Claims';
@@ -92,6 +96,12 @@ export default function Site(props) {
 									user={user}
 								/>
 							</Route>
+							<Route exact path="/agent/stats">
+								<AgentStats
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
 							<Route exact path="/agent/tickets">
 								<AgentTickets
 									mobile={mobile}
@@ -124,6 +134,24 @@ export default function Site(props) {
 							</Route>
 							<Route exact path="/konnektive/campaigns">
 								<KonnektiveCampaigns
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/justcall/queue_numbers">
+								<JustCallQueueNumbers
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/pharmacy/diagnosis">
+								<PharmacyDiagnosis
+									mobile={mobile}
+									user={user}
+								/>
+							</Route>
+							<Route exact path="/pharmacy/hrt/orders">
+								<PharmacyHrtOrders
 									mobile={mobile}
 									user={user}
 								/>

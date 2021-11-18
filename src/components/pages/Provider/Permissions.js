@@ -29,7 +29,7 @@ const DELETE = 8;
 const ALL    = 15;
 const TYPES = [
 	{title: "Provider Tool", rights: [
-		{name: "order_claims", title: "Order Claims", allowed: CREATE | DELETE},
+		{name: "order_claims", title: "Order Claims", allowed: UPDATE | CREATE | DELETE},
 		{name: "prov_overwrite", title: "Order Claim Overwrite", allowed: CREATE},
 		{name: "prov_templates", title: "Templates: Ability to create and modify templates", allowed: ALL}
 	]},
@@ -44,6 +44,7 @@ const TYPES = [
 	]},
 	{title: "Pharmacy", rights: [
 		{name: "prescriptions", title: "Prescriptions", allowed: CREATE | READ | UPDATE},
+		{name: "rx_diagnosis", title: "ICD to DoseSpot Diagnosis", allowed: READ},
 		{name: "rx_product", title: "Product to NDC", allowed: ALL},
 		{name: "medications", title: "Medications", "allowed": READ}
 	]}
