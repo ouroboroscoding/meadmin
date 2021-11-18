@@ -49,9 +49,10 @@ const TYPES = [
 		{name: "csr_messaging", title: "Messaging", allowed: CREATE | READ},
 		{name: "csr_stats", title: "Stats", allowed: READ},
 		{name: "csr_templates", title: "Templates", allowed: ALL},
-		{name: "justcall", title: "JustCall", allowed: READ},
+		{name: "justcall", title: "JustCall", allowed: CREATE | DELETE | READ},
 		{name: "hubspot", title: "HubSpot", allowed: READ},
-		{name: "everify", title: "E-Verification", allowed: READ | UPDATE}
+		{name: "everify", title: "E-Verification", allowed: READ | UPDATE},
+		{name: "csr_leads", title: "Leads", allowed: READ | DELETE}
 	]},
 	{title: "Developers", rights: [
 		{name: "documentation", title: "Documentation", allowed: CREATE | UPDATE | DELETE}
@@ -77,6 +78,8 @@ const TYPES = [
 		{name: "sms_workflow", title: "SMS Workflow Templates", allowed: READ | UPDATE}
 	]},
 	{title: "Pharmacy", rights: [
+		{name: "rx_diagnosis", title: "ICD to DoseSpot Diagnosis", allowed: ALL},
+		{name: "rx_hrt_order", title: "HRT Orders", allowed: READ | DELETE},
 		{name: "pharmacy_fill", title: "Pharmacy Fill", allowed: ALL},
 		{name: "rx_product", title: "Product to NDC", allowed: ALL},
 		{name: "manual_adhoc", title: "WellDyne Manual AdHoc", allowed: ALL},
@@ -191,11 +194,12 @@ export default class Permissions extends React.Component {
 
 			// If it's empty, make it null
 			if(val === '') {
-				val = null;
+				value[name].idents = null;
 			}
-
-			// Set the ident
-			value[name].idents = val.split(',');
+			// Else, split the ids and set them as a list
+			else {
+				value[name].idents = val.split(',');
+			}
 		}
 
 		// Update the state

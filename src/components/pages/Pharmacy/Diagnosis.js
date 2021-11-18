@@ -1,11 +1,11 @@
 /**
- * Pharmacy Products
+ * Pharmacy Diagnosis
  *
- * Page to manage products and their NDCs by pharmacy
+ * Page to manage diagnoses from IDC to DoseSpot ID
  *
  * @author Chris Nasr <bast@maleexcel.com>
  * @copyright MaleExcelMedical
- * @created 2021-01-05
+ * @created 2021-09-16
  */
 
 // NPM modules
@@ -25,7 +25,6 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 // Format Components
 import { Form, Results } from 'shared/components/Format';
-import { SelectData } from 'shared/components/Format/Shared';
 
 // Shared communication modules
 import Rest from 'shared/communication/rest';
@@ -36,36 +35,33 @@ import Events from 'shared/generic/events';
 import { afindi, clone } from 'shared/generic/tools';
 
 // Agent Definition
-import ProductDef from 'definitions/prescriptions/product';
-ProductDef['pharmacy']['__react__']['options'] = new SelectData('prescriptions', 'pharmacies', 'pharmacyId', 'name');
-ProductDef['unit_id']['__react__']['options'] = new SelectData('prescriptions', 'ds/dispenseunits', 'unit_id', 'name');
+import DiagnosisDef from 'definitions/prescriptions/diagnosis';
 
-// Generate the product Tree
-const ProductTree = new Tree(ProductDef);
+// Generate the diagnosis Tree
+const DiagnosisTree = new Tree(DiagnosisDef);
 
 // Default set of rights when no user
 const _NO_RIGHTS = {
 	create: false,
 	delete: false,
-	update: false,
-	pharmacy: false
+	update: false
 }
 
 /**
- * Products
+ * Diagnosis
  *
- * Lists all products available to the signed in user
+ * Lists all diagnoses available to the signed in user
  *
- * @name Products
+ * @name Diagnosis
  * @access public
  * @param Object props Attributes sent to the component
  * @returns React.Component
  */
-export default function Products(props) {
+export default function Diagnosis(props) {
 
 	// State
 	let [create, createSet] = useState(false);
-	let [products, productsSet] = useState(null);
+	let [diagnoses, diagnosesSet] = useState(null);
 	let [rights, rightsSet] = useState(_NO_RIGHTS);
 
 	// Effects
@@ -73,48 +69,47 @@ export default function Products(props) {
 
 		// If we have a user
 		if(props.user) {
-			productsFetch();
+			diagnosesFetch();
 			rightsSet({
-				create: Rights.has('rx_product', 'create'),
-				delete: Rights.has('rx_product', 'delete'),
-				update: Rights.has('rx_product', 'update'),
-				pharmacy: Rights.idents('rx_product')
+				create: Rights.has('rx_diagnosis', 'create'),
+				delete: Rights.has('rx_diagnosis', 'delete'),
+				update: Rights.has('rx_diagnosis', 'update')
 			})
 		} else {
-			productsSet(null);
+			diagnosesSet(null);
 			rightsSet(_NO_RIGHTS);
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.user]); // React to user changes
 
-	// Add the created product to the list
-	function productCreated(product) {
+	// Add the created diagnosis to the list
+	function diagnosisCreated(diagnosis) {
 
 		// Hide the create form
 		createSet(false);
 
-		// Use the current products to set the new products
-		productsSet(products => {
+		// Use the current diagnoses to set the new diagnoses
+		diagnosesSet(diagnoses => {
 
-			// Clone the products
-			let ret = clone(products);
+			// Clone the diagnoses
+			let ret = clone(diagnoses);
 
-			// Add the product to the front of the list
-			ret.unshift(product);
+			// Add the diagnosis to the front of the list
+			ret.unshift(diagnosis);
 
-			// Return the new products
+			// Return the new diagnoses
 			return ret;
 		})
 	}
 
-	// Remove a product
-	function productRemove(_id) {
+	// Remove a diagnosis
+	function diagnosisRemove(_id) {
 
-		// Use the current products to set the new products
-		productsSet(products => {
+		// Use the current diagnoses to set the new diagnoses
+		diagnosesSet(diagnoses => {
 
-			// Clone the products
-			let ret = clone(products);
+			// Clone the diagnoses
+			let ret = clone(diagnoses);
 
 			// Find the index
 			let iIndex = afindi(ret, '_id', _id);
@@ -124,16 +119,16 @@ export default function Products(props) {
 				ret.splice(iIndex, 1);
 			}
 
-			// Return the new products
+			// Return the new diagnoses
 			return ret;
 		});
 	}
 
-	// Fetch all the products from the server
-	function productsFetch() {
+	// Fetch all the diagnoses from the server
+	function diagnosesFetch() {
 
-		// Fetch all products
-		Rest.read('prescriptions', 'products', {}).done(res => {
+		// Fetch all diagnoses
+		Rest.read('prescriptions', 'diagnoses', {}).done(res => {
 
 			// If there's an error or warning
 			if(res.error && !res._handled) {
@@ -146,41 +141,41 @@ export default function Products(props) {
 			// If there's data
 			if(res.data) {
 
-				// Set the products
-				productsSet(res.data);
+				// Set the diagnoses
+				diagnosesSet(res.data);
 			}
 		});
 	}
 
-	// Update a product
-	function productUpdate(product) {
+	// Update a diagnosis
+	function diagnosisUpdate(diagnosis) {
 
-		// Use the current products to set the new products
-		productsSet(products => {
+		// Use the current diagnoses to set the new diagnoses
+		diagnosesSet(diagnoses => {
 
-			// Clone the products
-			let ret = clone(products);
+			// Clone the diagnoses
+			let ret = clone(diagnoses);
 
 			// Find the index
-			let iIndex = afindi(ret, '_id', product._id);
+			let iIndex = afindi(ret, '_id', diagnosis._id);
 
 			// If one is found, update it
 			if(iIndex > -1) {
-				ret[iIndex] = product;
+				ret[iIndex] = diagnosis;
 			}
 
-			// Return the new products
+			// Return the new diagnoses
 			return ret;
 		});
 	}
 
 	// Return the rendered component
 	return (
-		<Box id="pharmacyProducts" className="page flexGrow">
+		<Box id="pharmacyDiagnosis" className="page flexGrow">
 			<Box className="page_header">
-				<Typography className="title">Products to NDCs</Typography>
+				<Typography className="title">IDC to DoseSpot</Typography>
 				{rights.create &&
-					<Tooltip title="Create new Product">
+					<Tooltip title="Create new Diagnosis">
 						<IconButton onClick={ev => createSet(b => !b)}>
 							<AddCircleIcon className="icon" />
 						</IconButton>
@@ -191,28 +186,25 @@ export default function Products(props) {
 				<Paper className="padded">
 					<Form
 						cancel={ev => createSet(false)}
-						noun="product"
+						noun="diagnosis"
 						service="prescriptions"
-						success={productCreated}
-						tree={ProductTree}
+						success={diagnosisCreated}
+						tree={DiagnosisTree}
 						type="create"
-						value={{
-							pharmacy: rights.pharmacy ? rights.pharmacy[0] : ''
-						}}
 					/>
 				</Paper>
 			}
-			{products === null ?
+			{diagnoses === null ?
 				<Box>Loading...</Box>
 			:
 				<Results
-					data={products}
-					noun="product"
+					data={diagnoses}
+					noun="diagnosis"
 					orderBy="key"
-					remove={rights.delete ? productRemove : false}
+					remove={rights.delete ? diagnosisRemove : false}
 					service="prescriptions"
-					tree={ProductTree}
-					update={rights.update ? productUpdate : false}
+					tree={DiagnosisTree}
+					update={rights.update ? diagnosisUpdate : false}
 				/>
 			}
 		</Box>
@@ -220,7 +212,7 @@ export default function Products(props) {
 }
 
 // Valid props
-Products.propTypes = {
+Diagnosis.propTypes = {
 	mobile: PropTypes.bool.isRequired,
 	user: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
 }

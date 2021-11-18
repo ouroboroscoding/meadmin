@@ -29,6 +29,7 @@ import Typography from '@material-ui/core/Typography';
 
 // Material UI Icons
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import HeadsetMicIcon from '@material-ui/icons/HeadsetMic';
 import HttpsIcon from '@material-ui/icons/Https';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
@@ -38,6 +39,7 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // Composites
 import Hours from './Hours';
+import JustCall from './JustCall';
 import Permissions from './Permissions';
 
 // Format Components
@@ -357,6 +359,7 @@ export default function Agents(props) {
 					actions={Rights.has('csr_agents', 'update') ? [
 						{dynamic: oofActionData, callback: oofAction},
 						{tooltip: "Edit Agent's Office Hours", icon: QueryBuilderIcon, component: Hours},
+						{tooltip: "Associate JustCall Agent", icon: HeadsetMicIcon, component: JustCall},
 						{tooltip: "Edit Agent's permissions", icon: HttpsIcon, component: Permissions},
 						{tooltip: "Change Agent's password", icon: VpnKeyIcon, callback: agent => passwordSet(agent._id)}
 					] : null}

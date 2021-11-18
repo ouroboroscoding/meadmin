@@ -246,24 +246,42 @@ export default function Providers(props) {
 	}
 
 	// Remove a provider
-	function removeProvider(_id) {
+	function providerRemove(_id) {
 
 		// Use the current providers to set the new providers
 		providersSet(providers => {
 
-			// Clone the providers
-			let ret = clone(providers);
-
 			// Find the index
-			let iIndex = afindi(ret, '_id', _id);
+			let iIndex = afindi(providers, '_id', _id);
 
 			// If one is found, remove it
 			if(iIndex > -1) {
-				ret.splice(iIndex, 1);
+				providers.splice(iIndex, 1);
+				return clone(providers);
 			}
 
-			// Return the new providers
-			return ret;
+			// Return the existing providers
+			return providers;
+		});
+	}
+
+	// Update a provider
+	function providerUpdate(provider) {
+
+		// Use the current providers to set the new providers
+		providersSet(providers => {
+
+			// Find the index
+			let iIndex = afindi(providers, '_id', provider._id);
+
+			// If one is found, update it
+			if(iIndex > -1) {
+				providers[iIndex] = provider;
+				return clone(providers);
+			}
+
+			// Return the existing providers
+			return providers;
 		});
 	}
 
@@ -319,10 +337,10 @@ export default function Providers(props) {
 					}}
 					noun="provider"
 					orderBy="userName"
-					remove={Rights.has('providers', 'delete') ? removeProvider : false}
+					remove={Rights.has('providers', 'delete') ? providerRemove : false}
 					service="providers"
 					tree={ProviderTree}
-					update={Rights.has('providers', 'update')}
+					update={Rights.has('providers', 'update') ? providerUpdate : false}
 				/>
 			}
 			{permissions &&
