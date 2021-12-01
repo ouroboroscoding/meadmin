@@ -3,4 +3,4 @@
 	url = ../medefs.git
 [submodule "src/shared"]
 	path = src/shared
-	url = git@github.com:bastmaleexcel/me-ui-shared
+	url = ../me-ui-shared
